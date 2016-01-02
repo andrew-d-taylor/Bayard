@@ -1,0 +1,21 @@
+<table class="bootstrap-table table table-striped table-hover table-responsive"
+       data-toggle="table"
+       data-pagination="true"
+       data-search="true">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Assessment</th>
+        <th> </th>
+    </tr>
+    <tr ng-repeat="member in contactCollection" ng-clck="viewContactDetails(member.id)">
+        <td>{{member.firstName}}</td>
+        <td>{{member.lastName}}</td>
+        <td>{{member.email}}</td>
+        <td>{{member.phoneNumber1}}</td>
+        <td>{{member.assessment}}</td>
+        <td><a class="btn btn-md btn-info" ng-click="viewContactDetails(member.id)">View Details</a></td>
+    </tr>
+</table>
