@@ -1280,9 +1280,14 @@
             $scope.formHolder = {};
             $scope.modelHolder = {};
 
+            $scope.viewContactDetails = function(contactId) {
+                $location.path("/contacts/contact/"+contactId);
+            };
+
             var establishGroupMembers = function() {
                 GroupService.getAllContacts({id: $scope.modelHolder.groupModel.id}, function(contacts) {
                     $scope.modelHolder.groupModel.groupMembers = contacts;
+                    $scope.contactCollection = contacts;
 
                     if ($scope.modelHolder.groupModel.aggregations.length == 0 && $scope.modelHolder.groupModel.groupMembers.length == 0) {
                         $scope.showAggregationForm();
