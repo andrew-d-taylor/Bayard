@@ -8,8 +8,6 @@ import java.util.List;
 @Entity(name = "donor_info")
 public class DonorInfo extends BasicEntity implements Serializable {
 
-
-
     @Column
     private boolean sustainer;
 
@@ -18,10 +16,12 @@ public class DonorInfo extends BasicEntity implements Serializable {
 
     @Column
     private boolean irsLetterSent;
+
     @Column
     private boolean thankYouLetterSent;
 
-    @OneToMany(mappedBy="donor")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="donation_id")
     private List<Donation> donations;
 
     public DonorInfo (String id) {
