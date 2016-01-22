@@ -100,9 +100,7 @@ public class DaoPersistenceTest extends WebAppConfigurationAware{
         DonorInfo donorInfo = new DonorInfo();
         donorInfo.setDate(LocalDate.of(2015, 01, 01));
 
-        List<Donation> donations = new ArrayList<>();
-        donations.add(donation);
-        donorInfo.setDonations(donations);
+        donorInfo.addDonation(donation);
         contact.setDonorInfo(donorInfo);
 
         /*Member Info*/
@@ -157,7 +155,7 @@ public class DaoPersistenceTest extends WebAppConfigurationAware{
         /*Event info*/
         assertNotNull(fromDb.getAttendedEvents());
         Event fromEventDao = eventDao.findOne(event.getId());
-        assertEquals(fromEventDao.getId(),event.getId());
+        assertEquals(fromEventDao.getId(), event.getId());
         Set<Contact> attendees = fromEventDao.getAttendees();
         assertNotNull(attendees);
 
@@ -166,7 +164,7 @@ public class DaoPersistenceTest extends WebAppConfigurationAware{
         assertEquals(attendee.getId(), contact.getId());
 
         /*Donor Info*/
-        Donation fromDbDonation = donorInfoDao.findOne(donorInfo.getId()).getDonations().get(0);
+        Donation fromDbDonation = donorInfoDao.findOne(donorInfo.getId()).getDonations().iterator().next();
         assertEquals(fromDbDonation.getId(),donation.getId());
         assertEquals(fromDbDonation.isAnonymous(),donation.isAnonymous());
         assertEquals(fromDbDonation.isStandalone(),donation.isStandalone());

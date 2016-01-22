@@ -1,6 +1,7 @@
 package edu.usm.it.dao;
 
 import edu.usm.config.WebAppConfigurationAware;
+import edu.usm.domain.Contact;
 import edu.usm.domain.Donation;
 import edu.usm.domain.DonorInfo;
 import edu.usm.repository.*;
@@ -10,10 +11,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by andrew on 1/22/16.
@@ -39,9 +41,9 @@ public class DonationsTest extends WebAppConfigurationAware {
 
     @After
     public void tearDown() {
+        contactDao.deleteAll();
         donorInfoDao.deleteAll();
         donationDao.deleteAll();
-        contactDao.deleteAll();
         eventDao.deleteAll();
         organizationDao.deleteAll();
     }
@@ -73,15 +75,76 @@ public class DonationsTest extends WebAppConfigurationAware {
     }
 
     @Test
+    public void testDeleteDonation() {
+        donationDao.save(donation);
+        donationDao.delete(donation);
+        Donation fromDb = donationDao.findOne(donation.getId());
+        assertNull(fromDb);
+    }
+
+    @Test
     public void testCreateDonorInfo() {
         DonorInfo donorInfo = new DonorInfo();
-        List<Donation> donations = new ArrayList<>();
-        donations.add(donation);
-        donorInfo.setDonations(donations);
+        donorInfo.addDonation(donation);
         donorInfoDao.save(donorInfo);
 
         DonorInfo fromDb = donorInfoDao.findOne(donorInfo.getId());
-        assertEquals(fromDb.getDonations().get(0), donation);
+        assertEquals(fromDb.getDonations().iterator().next(), donation);
     }
+
+    @Test
+    public void testDeleteDonorInfo() {
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        donorInfoDao.save(donorInfo);
+
+        donorInfoDao.delete(donorInfo);
+
+        DonorInfo fromDb = donorInfoDao.findOne(donorInfo.getId());
+        assertNull(fromDb);
+
+        Donation relatedDonation = donationDao.findOne(donation.getId());
+        assertNull(relatedDonation);
+    }
+
+    @Test
+    public void testCreateContactWithDonations() {
+        Contact c = new Contact();
+        c.setFirstName("Test");
+        c.setEmail("email@test.com");
+
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        c.setDonorInfo(donorInfo);
+
+        contactDao.save(c);
+
+        Contact contactFromDb = contactDao.findOne(c.getId());
+        Set<Donation> contactDonations = contactFromDb.getDonorInfo().getDonations();
+        assertEquals(contactDonations.iterator().next(), donation);
+    }
+
+    @Test
+    public void testDeleteContactWithDonations() {
+        Contact c = new Contact();
+        c.setFirstName("Test");
+        c.setEmail("email@test.com");
+
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        c.setDonorInfo(donorInfo);
+
+        contactDao.save(c);
+        Contact fromDb = contactDao.findOne(c.getId());
+        assertNotNull(fromDb);
+        contactDao.delete(c);
+
+        fromDb = contactDao.findOne(c.getId());
+        assertNull(fromDb);
+        Donation donationFromDb = donationDao.findOne(donation.getId());
+        assertNull(donationFromDb);
+    }
+
+    
 
 }

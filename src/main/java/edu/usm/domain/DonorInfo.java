@@ -3,7 +3,9 @@ package edu.usm.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "donor_info")
 public class DonorInfo extends BasicEntity implements Serializable {
@@ -20,9 +22,9 @@ public class DonorInfo extends BasicEntity implements Serializable {
     @Column
     private boolean thankYouLetterSent;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="donation_id")
-    private List<Donation> donations;
+    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @JoinColumn(name="donor_info_id")
+    private Set<Donation> donations = new HashSet<>();
 
     public DonorInfo (String id) {
         setId(id);
@@ -48,12 +50,12 @@ public class DonorInfo extends BasicEntity implements Serializable {
         this.date = date;
     }
 
-    public List<Donation> getDonations() {
+    public Set<Donation> getDonations() {
         return donations;
     }
 
-    public void setDonations(List<Donation> donations) {
-        this.donations = donations;
+    public void addDonation(Donation donation) {
+        this.donations.add(donation);
     }
 
     public boolean isIrsLetterSent() {
