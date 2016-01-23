@@ -57,9 +57,9 @@ public class Organization extends Aggregation implements Serializable {
     @JsonView(Views.OrganizationList.class)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "donation_id")
-    private Set<Donation> donations = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
+    private Set<Donation> donations;
 
     public Organization(String id) {
         setId(id);
@@ -175,5 +175,12 @@ public class Organization extends Aggregation implements Serializable {
 
     public void setDonations(Set<Donation> donations) {
         this.donations = donations;
+    }
+
+    public void addDonation(Donation donation) {
+        if (null == this.donations) {
+            this.donations = new HashSet<>();
+        }
+        this.donations.add(donation);
     }
 }

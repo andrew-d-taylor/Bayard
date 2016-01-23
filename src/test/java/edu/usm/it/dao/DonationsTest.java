@@ -1,9 +1,7 @@
 package edu.usm.it.dao;
 
 import edu.usm.config.WebAppConfigurationAware;
-import edu.usm.domain.Contact;
-import edu.usm.domain.Donation;
-import edu.usm.domain.DonorInfo;
+import edu.usm.domain.*;
 import edu.usm.repository.*;
 import org.junit.After;
 import org.junit.Before;
@@ -108,6 +106,36 @@ public class DonationsTest extends WebAppConfigurationAware {
     }
 
     @Test
+    public void testUpdateDonorInfo() {
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        donorInfoDao.save(donorInfo);
+
+        donation = donorInfo.getDonations().iterator().next();
+        int newAmount = donation.getAmount() + 1;
+        donation.setAmount(newAmount);
+
+        donorInfoDao.save(donorInfo);
+        donorInfo = donorInfoDao.findOne(donorInfo.getId());
+
+        assertEquals(newAmount, donorInfo.getDonations().iterator().next().getAmount());
+    }
+
+    @Test
+    public void testRemoveDonationFromDonorInfo() {
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        donorInfoDao.save(donorInfo);
+
+        donorInfo = donorInfoDao.findOne(donorInfo.getId());
+        donorInfo.getDonations().remove(donation);
+        donorInfoDao.save(donorInfo);
+
+        donorInfo = donorInfoDao.findOne(donorInfo.getId());
+        assertEquals(0, donorInfo.getDonations().size());
+    }
+
+    @Test
     public void testCreateContactWithDonations() {
         Contact c = new Contact();
         c.setFirstName("Test");
@@ -145,6 +173,123 @@ public class DonationsTest extends WebAppConfigurationAware {
         assertNull(donationFromDb);
     }
 
-    
+    @Test
+    public void testUpdateContactDonation() {
+        Contact c = new Contact();
+        c.setFirstName("Test");
+        c.setEmail("email@test.com");
+
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        c.setDonorInfo(donorInfo);
+
+        contactDao.save(c);
+        Contact fromDb = contactDao.findOne(c.getId());
+        donation = fromDb.getDonorInfo().getDonations().iterator().next();
+        int newAmount = donation.getAmount() + 1;
+        donation.setAmount(newAmount);
+
+        contactDao.save(fromDb);
+
+        fromDb = contactDao.findOne(c.getId());
+        assertEquals(newAmount, fromDb.getDonorInfo().getDonations().iterator().next().getAmount());
+
+    }
+
+    @Test
+    public void testCreateOrganizationWithDonation() {
+        Organization org = new Organization();
+        org.setName("Org name");
+        org.addDonation(donation);
+        organizationDao.save(org);
+
+        org = organizationDao.findOne(org.getId());
+        assertEquals(donation, org.getDonations().iterator().next());
+    }
+
+    @Test
+    public void testDeleteOrganizationWithDonation() {
+        Organization org = new Organization();
+        org.setName("Org name");
+        org.addDonation(donation);
+        organizationDao.save(org);
+
+        org = organizationDao.findOne(org.getId());
+        organizationDao.delete(org);
+
+        org = organizationDao.findOne(org.getId());
+        assertNull(org);
+
+        donation = donationDao.findOne(donation.getId());
+        assertNull(donation);
+    }
+
+    @Test
+    public void testUpdateOrganizationDonation() {
+        Organization org = new Organization();
+        org.setName("Org name");
+        org.addDonation(donation);
+        organizationDao.save(org);
+
+        org = organizationDao.findOne(org.getId());
+        donation = org.getDonations().iterator().next();
+        int newAmount = donation.getAmount() + 1;
+        donation.setAmount(newAmount);
+        organizationDao.save(org);
+
+        org = organizationDao.findOne(org.getId());
+        assertEquals(newAmount, org.getDonations().iterator().next().getAmount());
+
+    }
+
+    @Test
+    public void testCreateEventWithDonation() {
+        Event e = new Event();
+        e.setName("Test Event");
+        e.setDateHeld("2016-12-12");
+        e.addDonation(donation);
+        eventDao.save(e);
+
+        e = eventDao.findOne(e.getId());
+        assertEquals(donation, e.getDonations().iterator().next());
+    }
+
+    @Test
+    public void testDeleteEventWithDonation() {
+        Event e = new Event();
+        e.setName("Test Event");
+        e.setDateHeld("2016-12-12");
+        e.addDonation(donation);
+        eventDao.save(e);
+
+        e = eventDao.findOne(e.getId());
+        eventDao.delete(e);
+
+        e = eventDao.findOne(e.getId());
+        assertNull(e);
+
+        donation = donationDao.findOne(donation.getId());
+        assertNull(donation);
+
+    }
+
+    @Test
+    public void testUpdateEventDonation() {
+        Event e = new Event();
+        e.setName("Test Event");
+        e.setDateHeld("2016-12-12");
+        e.addDonation(donation);
+        eventDao.save(e);
+
+        e = eventDao.findOne(e.getId());
+        donation = e.getDonations().iterator().next();
+        int newAmount = donation.getAmount() + 1;
+        donation.setAmount(newAmount);
+        eventDao.save(e);
+
+        e = eventDao.findOne(e.getId());
+        assertEquals(newAmount, e.getDonations().iterator().next().getAmount());
+    }
+
 
 }
