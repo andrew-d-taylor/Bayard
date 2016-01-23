@@ -98,7 +98,6 @@ public class DaoPersistenceTest extends WebAppConfigurationAware{
 
         /*DonorInfo*/
         DonorInfo donorInfo = new DonorInfo();
-        donorInfo.setDate(LocalDate.of(2015, 01, 01));
 
         donorInfo.addDonation(donation);
         contact.setDonorInfo(donorInfo);
