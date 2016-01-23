@@ -22,9 +22,9 @@ public class DonorInfo extends BasicEntity implements Serializable {
     @Column
     private boolean thankYouLetterSent;
 
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name="donor_info_id")
-    private Set<Donation> donations = new HashSet<>();
+    private Set<Donation> donations;
 
     public DonorInfo (String id) {
         setId(id);
@@ -55,6 +55,9 @@ public class DonorInfo extends BasicEntity implements Serializable {
     }
 
     public void addDonation(Donation donation) {
+        if (null == this.donations) {
+            this.donations = new HashSet<>();
+        }
         this.donations.add(donation);
     }
 
