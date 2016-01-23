@@ -1,5 +1,7 @@
 package edu.usm.domain;
 
+import org.hibernate.annotations.SortNatural;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ public class DonorInfo extends BasicEntity implements Serializable {
     private Set<Donation> donations;
 
     @OneToMany(mappedBy = "donorInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @SortNatural
     private SortedSet<SustainerPeriod> sustainerPeriods;
 
     public DonorInfo (String id) {
