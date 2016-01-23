@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity(name = "donor_info")
 public class DonorInfo extends BasicEntity implements Serializable {
@@ -59,5 +60,12 @@ public class DonorInfo extends BasicEntity implements Serializable {
 
     public void setSustainerPeriods(SortedSet<SustainerPeriod> sustainerPeriods) {
         this.sustainerPeriods = sustainerPeriods;
+    }
+
+    public void addSustainerPeriod(SustainerPeriod sustainerPeriod) {
+        if (null == this.sustainerPeriods) {
+            this.sustainerPeriods = new TreeSet<>();
+        }
+        this.sustainerPeriods.add(sustainerPeriod);
     }
 }
