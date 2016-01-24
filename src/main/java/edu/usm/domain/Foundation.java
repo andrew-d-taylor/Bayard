@@ -3,6 +3,7 @@ package edu.usm.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -162,6 +163,9 @@ public class Foundation extends BasicEntity implements Serializable{
     }
 
     public Set<InteractionRecord> getInteractionRecords() {
+        if (null == interactionRecords) {
+            interactionRecords = new HashSet<>();
+        }
         return interactionRecords;
     }
 
@@ -169,11 +173,22 @@ public class Foundation extends BasicEntity implements Serializable{
         this.interactionRecords = interactionRecords;
     }
 
+    public void addInteractionRecord(InteractionRecord record) {
+        this.getInteractionRecords().add(record);
+    }
+
     public Set<Grant> getGrants() {
+        if (null == grants) {
+            grants = new HashSet<>();
+        }
         return grants;
     }
 
     public void setGrants(Set<Grant> grants) {
         this.grants = grants;
+    }
+
+    public void addGrant(Grant grant) {
+        this.getGrants().add(grant);
     }
 }
