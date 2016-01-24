@@ -27,9 +27,20 @@ public class InteractionRecord extends BasicEntity implements Serializable {
     @Column
     private boolean requiresFollowUp;
 
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Foundation foundation;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "interaction_record_id")
     private Set<UserFileUpload> fileUploads;
+
+    public Foundation getFoundation() {
+        return foundation;
+    }
+
+    public void setFoundation(Foundation foundation) {
+        this.foundation = foundation;
+    }
 
     public boolean isRequiresFollowUp() {
         return requiresFollowUp;
