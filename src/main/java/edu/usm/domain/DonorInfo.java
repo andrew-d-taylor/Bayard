@@ -1,8 +1,10 @@
 package edu.usm.domain;
 
-import org.hibernate.annotations.SortNatural;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +17,7 @@ public class DonorInfo extends BasicEntity implements Serializable {
     @Column
     private boolean currentSustainer;
 
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name="donor_info_id")
     private Set<Donation> donations;
 
