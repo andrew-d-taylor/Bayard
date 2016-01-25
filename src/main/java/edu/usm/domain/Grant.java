@@ -4,12 +4,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by andrew on 1/24/16.
  */
-@Entity(name = "grant")
+@Entity(name = "foundation_grant")
 public class Grant extends BasicEntity implements Serializable {
 
     @Column
@@ -41,9 +42,10 @@ public class Grant extends BasicEntity implements Serializable {
     private int amountAppliedFor;
 
     @Column
-    private int amountRecieved;
+    private int amountReceived;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "foundation_id")
     private Foundation foundation;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -59,11 +61,18 @@ public class Grant extends BasicEntity implements Serializable {
     }
 
     public Set<UserFileUpload> getFileUploads() {
+        if (null == fileUploads) {
+            fileUploads = new HashSet<>();
+        }
         return fileUploads;
     }
 
     public void setFileUploads(Set<UserFileUpload> fileUploads) {
         this.fileUploads = fileUploads;
+    }
+
+    public void addFileUpload(UserFileUpload fileUpload) {
+        this.getFileUploads().add(fileUpload);
     }
 
     public String getName() {
@@ -138,11 +147,11 @@ public class Grant extends BasicEntity implements Serializable {
         this.amountAppliedFor = amountAppliedFor;
     }
 
-    public int getAmountRecieved() {
-        return amountRecieved;
+    public int getAmountReceived() {
+        return amountReceived;
     }
 
-    public void setAmountRecieved(int amountRecieved) {
-        this.amountRecieved = amountRecieved;
+    public void setAmountReceived(int amountReceived) {
+        this.amountReceived = amountReceived;
     }
 }
