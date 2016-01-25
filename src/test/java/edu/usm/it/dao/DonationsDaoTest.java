@@ -7,10 +7,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Set;
 
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -291,5 +293,48 @@ public class DonationsDaoTest extends WebAppConfigurationAware {
         assertEquals(newAmount, e.getDonations().iterator().next().getAmount());
     }
 
+    @Test
+    @Transactional
+    public void testPersistDonationByContactForEvent() {
+        Event e = new Event();
+        e.setName("Test Event");
+        e.setDateHeld("2016-12-12");
+        e.addDonation(donation);
+        eventDao.save(e);
+
+        e = eventDao.findOne(e.getId());
+        donation = e.getDonations().iterator().next();
+
+        Contact c = new Contact();
+        c.setFirstName("Test");
+        c.setEmail("email@test.com");
+
+        DonorInfo donorInfo = new DonorInfo();
+        donorInfo.addDonation(donation);
+        c.setDonorInfo(donorInfo);
+
+        contactDao.save(c);
+
+        e = eventDao.findOne(e.getId());
+        c = contactDao.findOne(c.getId());
+
+        assertEquals(e.getDonations().iterator().next(), c.getDonorInfo().getDonations().iterator().next());
+
+        /*Update*/
+        donation = e.getDonations().iterator().next();
+        int newAmount = donation.getAmount() + 1;
+        donation.setAmount(newAmount);
+        eventDao.save(e);
+
+        c = contactDao.findOne(c.getId());
+        donation = c.getDonorInfo().getDonations().iterator().next();
+        assertEquals(newAmount, donation.getAmount());
+
+        /*Delete*/
+        eventDao.delete(e);
+        contactDao.delete(c);
+        donation = donationDao.findOne(donation.getId());
+        assertNull(donation);
+    }
 
 }
