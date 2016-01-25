@@ -16,11 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by andrew on 1/24/16.
@@ -41,21 +40,9 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
     private InteractionRecord interactionRecord;
     private UserFileUpload userFileUpload;
 
-    private byte[] fileData;
-    private int fileLength;
+    private int fileLength = 10;
+    private byte[] fileData = new byte[fileLength];
 
-    public FoundationPersistenceTest() {
-        File testFile = new File("application.properties");
-        try {
-            FileInputStream fileInputStream = new FileInputStream(testFile);
-            fileLength = (int)testFile.length();
-            fileData = new byte[fileLength];
-            fileInputStream.read(fileData);
-        } catch (IOException e) {
-            fileLength = 10;
-            fileData = new byte[fileLength];
-        }
-    }
 
     @Before
     public void setup() throws Exception {
@@ -70,6 +57,9 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
         grant.setAmountReceived(50);
 
         userFileUpload = new UserFileUpload();
+        for (int i = 0; i < fileLength; i++) {
+            fileData[i] = (byte)i;
+        }
         userFileUpload.setFileContent(fileData);
         userFileUpload.setFileType(".properties");
         userFileUpload.setFileName("application.properties");
@@ -187,13 +177,18 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
         foundation = foundationDao.findOne(foundation.getId());
 
         userFileUpload = foundation.getGrants().iterator().next().getFileUploads().iterator().next();
-        String newDescription = "New Test Description";
-        userFileUpload.setDescription(newDescription);
+        byte []persistedFileData = userFileUpload.getFileContent();
+
+        assertArrayEquals(fileData, persistedFileData);
+
+        byte newByteValue = (byte) 500;
+        persistedFileData[0] = newByteValue;
+        userFileUpload.setFileContent(persistedFileData);
         foundationDao.save(foundation);
 
         foundation = foundationDao.findOne(foundation.getId());
         userFileUpload = foundation.getGrants().iterator().next().getFileUploads().iterator().next();
-        assertEquals(newDescription, userFileUpload.getDescription());
+        assertArrayEquals(persistedFileData, userFileUpload.getFileContent());
 
     }
 
