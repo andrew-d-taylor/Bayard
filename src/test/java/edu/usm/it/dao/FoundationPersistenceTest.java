@@ -181,4 +181,20 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
         assertEquals(newInteractionType, interactionRecord.getInteractionType());
     }
 
+    @Test
+    public void testCascadeUpdateUserFileUpload() {
+        foundationDao.save(foundation);
+        foundation = foundationDao.findOne(foundation.getId());
+
+        userFileUpload = foundation.getGrants().iterator().next().getFileUploads().iterator().next();
+        String newDescription = "New Test Description";
+        userFileUpload.setDescription(newDescription);
+        foundationDao.save(foundation);
+
+        foundation = foundationDao.findOne(foundation.getId());
+        userFileUpload = foundation.getGrants().iterator().next().getFileUploads().iterator().next();
+        assertEquals(newDescription, userFileUpload.getDescription());
+
+    }
+
 }
