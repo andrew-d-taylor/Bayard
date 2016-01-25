@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity(name = "donation")
-public class Donation extends BasicEntity implements Serializable {
+public class Donation extends BasicEntity implements MonetaryContribution, Serializable {
 
     @Column
     private int amount;
@@ -32,6 +32,7 @@ public class Donation extends BasicEntity implements Serializable {
     @Column
     private boolean standalone;
 
+    @Override
     public int getAmount() {
         return amount;
     }
@@ -48,6 +49,7 @@ public class Donation extends BasicEntity implements Serializable {
         this.type = type;
     }
 
+    @Override
     public LocalDate getDateOfReceipt() {
         return dateOfReceipt;
     }

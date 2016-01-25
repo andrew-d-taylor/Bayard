@@ -9,7 +9,7 @@ import java.util.*;
  * Created by andrew on 1/23/16.
  */
 @Entity(name = "sustainer_period")
-public class SustainerPeriod extends BasicEntity implements Comparable<SustainerPeriod>, Serializable {
+public class SustainerPeriod extends BasicEntity implements MonetaryContribution, Comparable<SustainerPeriod>, Serializable {
 
     @Transient
     private Map<Integer, Boolean> activeMonths = new HashMap<>();
@@ -138,6 +138,15 @@ public class SustainerPeriod extends BasicEntity implements Comparable<Sustainer
 
     }
 
+    @Override
+    public int getAmount() {
+        return getTotalYearToDate();
+    }
+
+    @Override
+    public LocalDate getDateOfReceipt() {
+        return LocalDate.of(this.getPeriodYear(), 1, 1);
+    }
 
     public DonorInfo getDonorInfo() {
         return donorInfo;

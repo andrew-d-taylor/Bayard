@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by andrew on 1/24/16.
  */
 @Entity(name = "foundation_grant")
-public class Grant extends BasicEntity implements Serializable {
+public class Grant extends BasicEntity implements MonetaryContribution, Serializable {
 
     @Column
     @NotNull
@@ -91,6 +91,11 @@ public class Grant extends BasicEntity implements Serializable {
         this.startPeriod = startPeriod;
     }
 
+    @Override
+    public LocalDate getDateOfReceipt() {
+        return getStartPeriod();
+    }
+
     public LocalDate getEndPeriod() {
         return endPeriod;
     }
@@ -149,6 +154,11 @@ public class Grant extends BasicEntity implements Serializable {
 
     public int getAmountReceived() {
         return amountReceived;
+    }
+
+    @Override
+    public int getAmount() {
+        return getAmountReceived();
     }
 
     public void setAmountReceived(int amountReceived) {
