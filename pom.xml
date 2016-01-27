@@ -176,6 +176,13 @@
 
     </dependencies>
     <build>
+        <resources>
+            <!-- Writes project.version to version.properties file -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
