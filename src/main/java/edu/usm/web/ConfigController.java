@@ -19,9 +19,7 @@ public class ConfigController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ConfigDto getImplementationConfig() {
-
         return configService.getImplementationConfig();
-
     }
 
 }

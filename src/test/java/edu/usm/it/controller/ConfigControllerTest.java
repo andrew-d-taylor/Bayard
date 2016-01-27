@@ -26,7 +26,8 @@ public class ConfigControllerTest extends WebAppConfigurationAware {
         mockMvc.perform(get("/config").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$implementationName", is(configService.getImplementationConfig().getImplementationName())));
+                .andExpect(jsonPath("$implementationName", is(configService.getImplementationConfig().getImplementationName())))
+                .andExpect(jsonPath("$version", is(configService.getImplementationConfig().getVersion())));
 
     }
 

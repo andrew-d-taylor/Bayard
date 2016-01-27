@@ -14,10 +14,14 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${bayard.implementation.name}")
     private String implementationName;
 
+    @Value("${version}")
+    private String version;
+
     @Override
     public ConfigDto getImplementationConfig() {
         ConfigDto dto = new ConfigDto();
         dto.setImplementationName(implementationName);
+        dto.setVersion(version);
         return dto;
     }
 }
