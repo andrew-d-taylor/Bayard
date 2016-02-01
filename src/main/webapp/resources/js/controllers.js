@@ -73,7 +73,7 @@
 
         ConfigService.getImplementationConfig({}, function(config) {
             $scope.config = config;
-            console.log("Implementation Name: " + config.implementationName);
+            console.log("Config: "+config.implementationName+", "+config.largeLogoFilePath+", "+config.faviconFilePath);
         }, function(err) {
            console.log(err);
         });
@@ -1220,7 +1220,9 @@
     controllers.controller ('LoginCtrl',['$scope','$rootScope', '$location', 'UserService','$http', 'ConfigService', function($scope,$rootScope, $location, UserService, $http, ConfigService) {
 
         //Placeholder title before login is successful and implementation name is fetched from the server
-        $rootScope.config.implementationName = "Login";
+        if ($rootScope.config == null) {
+            $rootScope.config = {implementationName: "Login"}
+        }
 
         $scope.error = false;
 

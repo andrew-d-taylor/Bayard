@@ -11,6 +11,26 @@ public class ConfigDto implements Serializable{
 
     private String version;
 
+    private String largeLogoFilePath;
+
+    private String faviconFilePath;
+
+    public String getFaviconFilePath() {
+        return faviconFilePath;
+    }
+
+    public void setFaviconFilePath(String faviconFilePath) {
+        this.faviconFilePath = faviconFilePath;
+    }
+
+    public String getLargeLogoFilePath() {
+        return largeLogoFilePath;
+    }
+
+    public void setLargeLogoFilePath(String largeLogoFilePath) {
+        this.largeLogoFilePath = largeLogoFilePath;
+    }
+
     public String getVersion() {
         return version;
     }

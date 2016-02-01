@@ -17,11 +17,19 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${version}")
     private String version;
 
+    @Value("${bayard.implementation.largeLogoFilePath}")
+    private String largeLogoFilePath;
+
+    @Value("${bayard.implementation.faviconFilePath}")
+    private String faviconFilePath;
+
     @Override
     public ConfigDto getImplementationConfig() {
         ConfigDto dto = new ConfigDto();
         dto.setImplementationName(implementationName);
         dto.setVersion(version);
+        dto.setLargeLogoFilePath(largeLogoFilePath);
+        dto.setFaviconFilePath(faviconFilePath);
         return dto;
     }
 }
