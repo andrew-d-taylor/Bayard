@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Iterator;
 
@@ -52,6 +53,7 @@ public class SustainerPeriodPersistenceTest extends WebAppConfigurationAware{
 
         sustainerPeriod = new SustainerPeriod();
         sustainerPeriod.setPeriodYear(2015);
+        sustainerPeriod.setPeriodStartDate(LocalDate.of(2015, Month.JANUARY, 1));
 
         sustainerPeriod.setDonorInfo(donorInfo);
         donorInfo.addSustainerPeriod(sustainerPeriod);
@@ -102,17 +104,39 @@ public class SustainerPeriodPersistenceTest extends WebAppConfigurationAware{
     }
 
     @Test
+    public void testCreateMultipleSustainerPeriods() {
+        contactDao.save(contact);
+        contact = contactDao.findOne(contact.getId());
+
+        SustainerPeriod secondPeriod = new SustainerPeriod();
+        secondPeriod.setMonthlyAmount(sustainerPeriod.getMonthlyAmount());
+        secondPeriod.setPeriodYear(2016);
+        secondPeriod.setPeriodStartDate(LocalDate.now());
+        secondPeriod.setDonorInfo(contact.getDonorInfo());
+        contact.getDonorInfo().addSustainerPeriod(secondPeriod);
+
+        contactDao.save(contact);
+        contact = contactDao.findOne(contact.getId());
+
+        assertTrue(contact.getDonorInfo().getSustainerPeriods().contains(sustainerPeriod));
+        assertTrue(contact.getDonorInfo().getSustainerPeriods().contains(secondPeriod));
+
+    }
+
+    @Test
     public void testSustainerPeriodsOrdering() {
 
         SustainerPeriod olderSustainerPeriod = new SustainerPeriod();
         olderSustainerPeriod.setMonthlyAmount(1);
-        olderSustainerPeriod.setPeriodYear(sustainerPeriod.getPeriodYear() - 1);
+        olderSustainerPeriod.setPeriodYear(2014);
+        olderSustainerPeriod.setPeriodStartDate(LocalDate.of(2014, Month.JANUARY, 1));
         olderSustainerPeriod.setDonorInfo(donorInfo);
         donorInfo.addSustainerPeriod(olderSustainerPeriod);
 
         SustainerPeriod mostRecentPeriod = new SustainerPeriod();
         mostRecentPeriod.setMonthlyAmount(2);
-        mostRecentPeriod.setPeriodYear(sustainerPeriod.getPeriodYear() + 1);
+        mostRecentPeriod.setPeriodYear(2016);
+        mostRecentPeriod.setPeriodStartDate(LocalDate.of(2016, Month.JANUARY, 1));
         mostRecentPeriod.setDonorInfo(donorInfo);
         donorInfo.addSustainerPeriod(mostRecentPeriod);
 
@@ -133,37 +157,15 @@ public class SustainerPeriodPersistenceTest extends WebAppConfigurationAware{
 
     @Test
     public void testCalculateYearToDate() {
-        sustainerPeriod.setJanuary(true);
-        sustainerPeriod.setFebruary(true);
-        sustainerPeriod.setDecember(true);
+        sustainerPeriod.setPeriodStartDate(LocalDate.of(2015, 1, 1));
+        sustainerPeriod.setCancelDate(LocalDate.of(2015, 3, 1));
         assertEquals(sustainerPeriod.getMonthlyAmount() * 3, sustainerPeriod.getTotalYearToDate());
 
-        sustainerPeriod.setDecember(false);
-        assertEquals(sustainerPeriod.getMonthlyAmount() * 2, sustainerPeriod.getTotalYearToDate());
-
         contactDao.save(contact);
         contact = contactDao.findOne(contact.getId());
 
-        assertEquals(sustainerPeriod.getMonthlyAmount() * 2, contact.getDonorInfo().getSustainerPeriods().iterator().next().getTotalYearToDate());
+        assertEquals(sustainerPeriod.getMonthlyAmount() * 3, contact.getDonorInfo().getSustainerPeriods().iterator().next().getTotalYearToDate());
     }
 
-    @Test
-    public void testDynamicPeriodUpdate() {
-        contactDao.save(contact);
-        contact = contactDao.findOne(contact.getId());
-
-        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
-        sustainerPeriod.setMonth(Month.APRIL, true);
-        sustainerPeriod.setMonth(Month.DECEMBER, true);
-        contactDao.save(contact);
-
-        contact = contactDao.findOne(contact.getId());
-        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
-
-        assertTrue(sustainerPeriod.isApril());
-        assertTrue(sustainerPeriod.isDecember());
-        assertEquals(sustainerPeriod.getMonthlyAmount() * 2, sustainerPeriod.getTotalYearToDate());
-
-    }
 
 }
