@@ -1,8 +1,10 @@
 package edu.usm.domain;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Period;
 import java.util.*;
 
 /**
@@ -11,14 +13,19 @@ import java.util.*;
 @Entity(name = "sustainer_period")
 public class SustainerPeriod extends BasicEntity implements MonetaryContribution, Comparable<SustainerPeriod>, Serializable {
 
-    @Transient
-    private Map<Integer, Boolean> activeMonths = new HashMap<>();
-
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @NotNull
     private DonorInfo donorInfo;
 
     @Column
     private int periodYear;
+
+    @Column
+    @NotNull
+    private LocalDate periodStartDate;
+
+    @Column
+    private LocalDate cancelDate;
 
     @Column
     private int monthlyAmount;
@@ -26,116 +33,25 @@ public class SustainerPeriod extends BasicEntity implements MonetaryContribution
     @Column
     private boolean sentIRSLetter;
 
-    @Column
-    private boolean active;
-
-    @Column
-    private boolean january;
-
-    @Column
-    private boolean february;
-
-    @Column
-    private boolean march;
-
-    @Column
-    private boolean april;
-
-    @Column
-    private boolean may;
-
-    @Column
-    private boolean june;
-
-    @Column
-    private boolean july;
-
-    @Column
-    private boolean august;
-
-    @Column
-    private boolean september;
-
-    @Column
-    private boolean october;
-
-    @Column
-    private boolean november;
-
-    @Column
-    private boolean december;
-
     @Override
-    public int compareTo(SustainerPeriod o2) {
-        if (this.periodYear == 0 && o2.getPeriodYear() == 0) {
+    public int compareTo(SustainerPeriod o) {
+        if (o.getPeriodStartDate().isEqual(this.getPeriodStartDate())) {
             return 0;
-        } else if (this.periodYear == 0) {
-            return 1;
-        } else if (o2.getPeriodYear() == 0) {
-            return -1;
-        } else {
-            LocalDate thisDate = LocalDate.of(this.periodYear, 1, 1);
-            LocalDate otherDate = LocalDate.of(o2.getPeriodYear(), 1, 1);
-
-            return otherDate.compareTo(thisDate);
         }
+        return (this.getPeriodStartDate().isBefore(o.getPeriodStartDate())) ? 1 : -1;
     }
-
 
     public int getTotalYearToDate() {
+        LocalDate endOfPeriod = this.cancelDate;
+        if (endOfPeriod == null) {
+            endOfPeriod = LocalDate.now();
+        }
+        Period periodBetween = Period.between(this.periodStartDate, endOfPeriod);
         int total = 0;
-        Set<Integer> months = this.activeMonths.keySet();
-        for (Integer month: months) {
-            if (this.activeMonths.get(month)) {
-                total += this.monthlyAmount;
-            }
+        for (int i = 0; i < periodBetween.getMonths(); i++) {
+            total += this.monthlyAmount;
         }
         return total;
-    }
-
-
-    public void setMonth(Month month, boolean value) {
-        switch (month.getValue()) {
-            case 1:
-                this.setJanuary(value);
-                break;
-            case 2:
-                this.setFebruary(value);
-                break;
-            case 3:
-                this.setMarch(value);
-                break;
-            case 4:
-                this.setApril(value);
-                break;
-            case 5:
-                this.setMay(value);
-                break;
-            case 6:
-                this.setJune(value);
-                break;
-            case 7:
-                this.setJuly(value);
-                break;
-            case 8:
-                this.setAugust(value);
-                break;
-            case 9:
-                this.setSeptember(value);
-                break;
-            case 10:
-                this.setOctober(value);
-                break;
-            case 11:
-                this.setNovember(value);
-                break;
-            case 12:
-                this.setDecember(value);
-                break;
-            default:
-                break;
-        }
-
     }
 
     @Override
@@ -145,23 +61,31 @@ public class SustainerPeriod extends BasicEntity implements MonetaryContribution
 
     @Override
     public LocalDate getDateOfReceipt() {
-        return LocalDate.of(this.getPeriodYear(), 1, 1);
+        return this.getPeriodStartDate();
     }
 
     public DonorInfo getDonorInfo() {
         return donorInfo;
     }
 
+    public LocalDate getPeriodStartDate() {
+        return periodStartDate;
+    }
+
+    public void setPeriodStartDate(LocalDate periodStartDate) {
+        this.periodStartDate = periodStartDate;
+    }
+
+    public LocalDate getCancelDate() {
+        return cancelDate;
+    }
+
+    public void setCancelDate(LocalDate cancelDate) {
+        this.cancelDate = cancelDate;
+    }
+
     public void setDonorInfo(DonorInfo donorInfo) {
         this.donorInfo = donorInfo;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public int getPeriodYear() {
@@ -188,112 +112,5 @@ public class SustainerPeriod extends BasicEntity implements MonetaryContribution
         this.sentIRSLetter = sentIRSLetter;
     }
 
-    public boolean isJanuary() {
-        return january;
-    }
-
-    public void setJanuary(boolean january) {
-        this.january = january;
-        this.activeMonths.put(1, january);
-    }
-
-    public boolean isFebruary() {
-        return february;
-    }
-
-    public void setFebruary(boolean february) {
-        this.february = february;
-        this.activeMonths.put(2, february);
-    }
-
-    public boolean isMarch() {
-        return march;
-    }
-
-    public void setMarch(boolean march) {
-        this.march = march;
-        this.activeMonths.put(3, march);
-    }
-
-    public boolean isApril() {
-        return april;
-    }
-
-    public void setApril(boolean april) {
-        this.april = april;
-        this.activeMonths.put(4, april);
-    }
-
-    public boolean isMay() {
-        return may;
-    }
-
-    public void setMay(boolean may) {
-        this.may = may;
-        this.activeMonths.put(5, may);
-    }
-
-    public boolean isJune() {
-        return june;
-    }
-
-    public void setJune(boolean june) {
-        this.june = june;
-        this.activeMonths.put(6, june);
-    }
-
-    public boolean isJuly() {
-        return july;
-    }
-
-    public void setJuly(boolean july) {
-        this.july = july;
-        this.activeMonths.put(7, july);
-    }
-
-    public boolean isAugust() {
-        return august;
-    }
-
-    public void setAugust(boolean august) {
-        this.august = august;
-        this.activeMonths.put(8, august);
-    }
-
-    public boolean isSeptember() {
-        return september;
-    }
-
-    public void setSeptember(boolean september) {
-        this.september = september;
-        this.activeMonths.put(9, september);
-    }
-
-    public boolean isOctober() {
-        return october;
-    }
-
-    public void setOctober(boolean october) {
-        this.october = october;
-        this.activeMonths.put(10, october);
-    }
-
-    public boolean isNovember() {
-        return november;
-    }
-
-    public void setNovember(boolean november) {
-        this.november = november;
-        this.activeMonths.put(11, november);
-    }
-
-    public boolean isDecember() {
-        return december;
-    }
-
-    public void setDecember(boolean december) {
-        this.december = december;
-        this.activeMonths.put(12, december);
-    }
 
 }
