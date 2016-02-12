@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity(name = "foundation")
 public class Foundation extends BasicEntity implements Serializable{
 
-    @Column
+    @Column(unique = true)
     @NotNull
     private String name;
 
