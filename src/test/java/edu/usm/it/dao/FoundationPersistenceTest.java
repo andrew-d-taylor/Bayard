@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,6 +95,12 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
         assertEquals(grant, foundation.getGrants().iterator().next());
         assertEquals(userFileUpload, grant.getFileUploads().iterator().next());
         assertEquals(fileData, grant.getFileUploads().iterator().next().getFileContent());
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testCreateFoundationDuplicateName() {
+        foundationDao.save(foundation);
+        foundationDao.save(new Foundation(foundation.getName()));
     }
 
     @Test
