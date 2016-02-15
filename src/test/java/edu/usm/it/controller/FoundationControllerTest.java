@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,8 +84,24 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
                 .andExpect(jsonPath("$.[*].name", containsInAnyOrder(foundation.getName(), secondFoundation.getName())))
                 .andExpect(jsonPath("$.[*].address", containsInAnyOrder(foundation.getAddress(), secondFoundation.getAddress())))
                 .andExpect(jsonPath("$.[*].primaryContactName", containsInAnyOrder(foundation.getPrimaryContactName(), secondFoundation.getPrimaryContactName())));
+    }
 
-
+    @Test
+    public void testGetFoundation() throws Exception {
+        foundationService.create(foundation);
+        mockMvc.perform(get("/foundations/"+foundation.getId()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(foundation.getName())))
+                .andExpect(jsonPath("$.address", is(foundation.getAddress())))
+                .andExpect(jsonPath("$.currentGrantor", is(foundation.isCurrentGrantor())))
+                .andExpect(jsonPath("$.primaryContactName", is(foundation.getPrimaryContactName())))
+                .andExpect(jsonPath("$.primaryContactEmail", is(foundation.getPrimaryContactEmail())))
+                .andExpect(jsonPath("$.primaryContactTitle", is(foundation.getPrimaryContactTitle())))
+                .andExpect(jsonPath("$.primaryContactPhone", is(foundation.getPrimaryContactPhone())))
+                .andExpect(jsonPath("$.secondaryContactName", is(foundation.getSecondaryContactName())))
+                .andExpect(jsonPath("$.secondaryContactTitle", is(foundation.getSecondaryContactTitle())))
+                .andExpect(jsonPath("$.secondaryContactEmail", is(foundation.getSecondaryContactEmail())))
+                .andExpect(jsonPath("$.secondaryContactPhone", is(foundation.getSecondaryContactPhone())));
     }
 
 

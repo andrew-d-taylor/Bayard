@@ -33,7 +33,13 @@ public class FoundationController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({Views.FoundationList.class})
     public Set<Foundation> getAllFoundations() {
-        Set<Foundation> foundations = foundationService.findAll();
-        return foundations;
+        return foundationService.findAll();
+    }
+
+    @RequestMapping(value= "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView({Views.FoundationDetails.class})
+    public Foundation getFoundation(@PathVariable("id") String id) {
+        return foundationService.findById(id);
     }
 }
