@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -28,7 +29,6 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     FoundationService foundationService;
 
     Foundation foundation;
-
     ObjectMapper mapper = new ObjectMapper();
 
     @Before
@@ -104,5 +104,22 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
                 .andExpect(jsonPath("$.secondaryContactPhone", is(foundation.getSecondaryContactPhone())));
     }
 
+    @Test
+    public void testGetFoundationWithUtility() throws Exception {
+        foundationService.create(foundation);
+        BayardTestUtilities.performEntityGetSingle(BayardTestUtilities.foundationDetailsFields, "/foundations/"+foundation.getId(), mockMvc, foundation);
+    }
 
+    @Test
+    public void testGetAllFoundationsWithUtility() throws Exception {
+        foundationService.create(foundation);
+        Foundation secondFoundation = new Foundation("Second Foundation");
+        secondFoundation.setPrimaryContactEmail("primary@contact.email");
+        secondFoundation.setAddress("987 Ave Americas");
+        secondFoundation.setPrimaryContactName("Another Primary Contact");
+        secondFoundation.setPhoneNumber("123-321-2121");
+        foundationService.create(secondFoundation);
+
+        BayardTestUtilities.performEntityGetMultiple(BayardTestUtilities.foundationListFields, "/foundations", mockMvc, foundation, secondFoundation);
+    }
 }
