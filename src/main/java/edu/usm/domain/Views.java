@@ -24,4 +24,7 @@ public class Views {
     public interface GroupDetails {}
     public interface GroupPanel {}
 
+    public interface FoundationList{}
+    public interface FoundationDetails{}
+
 }

@@ -1,5 +1,7 @@
  package edu.usm.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,48 +16,63 @@ public class Foundation extends BasicEntity implements Serializable{
 
     @Column(unique = true)
     @NotNull
+    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private String name;
 
     @Column
+    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private String address;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String website;
 
     @Column
+    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private String phoneNumber;
 
     @Column
+    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private String primaryContactName;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String primaryContactTitle;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String primaryContactPhone;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String primaryContactEmail;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String secondaryContactName;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String secondaryContactTitle;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String secondaryContactPhone;
 
     @Column
+    @JsonView({Views.FoundationDetails.class})
     private String secondaryContactEmail;
 
     @Column
+    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private boolean currentGrantor;
 
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonView({Views.FoundationDetails.class})
     private Set<InteractionRecord> interactionRecords;
 
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonView({Views.FoundationDetails.class})
     private Set<Grant> grants;
 
     public Foundation() {
