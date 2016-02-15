@@ -1,6 +1,5 @@
 package edu.usm.it.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
@@ -85,7 +82,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
                 .andExpect(jsonPath("$.[*]", hasSize(2)))
                 .andExpect(jsonPath("$.[*].name", containsInAnyOrder(foundation.getName(), secondFoundation.getName())))
                 .andExpect(jsonPath("$.[*].address", containsInAnyOrder(foundation.getAddress(), secondFoundation.getAddress())))
-                .andExpect(jsonPath("$.[*].primarycontactname", containsInAnyOrder(foundation.getPrimaryContactName(), secondFoundation.getPrimaryContactName())));
+                .andExpect(jsonPath("$.[*].primaryContactName", containsInAnyOrder(foundation.getPrimaryContactName(), secondFoundation.getPrimaryContactName())));
 
 
     }
