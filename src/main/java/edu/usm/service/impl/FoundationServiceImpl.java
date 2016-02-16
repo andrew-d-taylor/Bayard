@@ -1,10 +1,13 @@
 package edu.usm.service.impl;
 
 import edu.usm.domain.Foundation;
+import edu.usm.domain.exception.ConstraintMessage;
+import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
 import edu.usm.repository.FoundationDao;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -24,14 +27,34 @@ public class FoundationServiceImpl implements FoundationService {
     }
 
     @Override
+    public Foundation findByName(String name) {
+        return foundationDao.findByName(name);
+    }
+
+    @Override
     public Set<Foundation> findAll() {
         return (Set<Foundation>) foundationDao.findAll();
     }
 
     @Override
-    public String create(Foundation foundation) {
-        foundationDao.save(foundation);
+    public String create(Foundation foundation) throws ConstraintViolation {
+        try {
+            foundationDao.save(foundation);
+        } catch (DataIntegrityViolationException e) {
+            handlePersistenceException(foundation);
+        }
         return foundation.getId();
+    }
+
+    private void handlePersistenceException(Foundation foundation) throws ConstraintViolation{
+        if (null == foundation.getName()) {
+            throw new ConstraintViolation(ConstraintMessage.FOUNDATION_REQUIRED_NAME);
+        }
+        Foundation existing = findByName(foundation.getName());
+        if (null != existing) {
+            throw new ConstraintViolation.NonUniqueDomainEntity(ConstraintMessage.FOUNDATION_DUPLICATE_NAME, existing);
+        }
+        throw new ConstraintViolation();
     }
 
     @Override

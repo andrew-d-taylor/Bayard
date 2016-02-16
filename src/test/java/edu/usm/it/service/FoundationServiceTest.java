@@ -2,12 +2,14 @@ package edu.usm.it.service;
 
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
+import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.service.FoundationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -36,12 +38,12 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
     }
 
     @Test
-    public void testCreateFoundation() {
+    public void testCreateFoundation() throws ConstraintViolation{
         foundationService.create(foundation);
     }
 
     @Test
-    public void testUpdateFoundation() {
+    public void testUpdateFoundation() throws ConstraintViolation{
         foundationService.create(foundation);
         foundation = foundationService.findById(foundation.getId());
         String newName = "New Name";
@@ -52,7 +54,7 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
     }
 
     @Test
-    public void testDeleteFoundation() {
+    public void testDeleteFoundation() throws ConstraintViolation{
         foundationService.create(foundation);
         foundation = foundationService.findById(foundation.getId());
         assertNotNull(foundation);
@@ -63,7 +65,7 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
     }
 
     @Test
-    public void testDeleteAll() {
+    public void testDeleteAll() throws ConstraintViolation{
         foundationService.create(foundation);
         Foundation second = new Foundation("Second Foundation");
         foundationService.create(second);

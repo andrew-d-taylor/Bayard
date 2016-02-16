@@ -3,6 +3,7 @@ package edu.usm.web;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Views;
+import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.FoundationDto;
 import edu.usm.dto.Response;
@@ -26,7 +27,7 @@ public class FoundationController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Response createFoundation(@RequestBody Foundation foundation) {
+    public Response createFoundation(@RequestBody Foundation foundation) throws ConstraintViolation{
         String foundationId = foundationService.create(foundation);
         return new Response(foundationId, Response.SUCCESS);
     }

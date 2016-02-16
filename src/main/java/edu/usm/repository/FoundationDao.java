@@ -13,4 +13,6 @@ public interface FoundationDao extends CrudRepository<Foundation, String> {
     @Override
     HashSet<Foundation> findAll();
 
+    Foundation findByName(String name);
+
 }

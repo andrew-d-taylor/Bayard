@@ -1,6 +1,7 @@
 package edu.usm.service;
 
 import edu.usm.domain.Foundation;
+import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -15,10 +16,13 @@ public interface FoundationService {
     Foundation findById(String id);
 
     @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    Foundation findByName(String name);
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     Set<Foundation> findAll();
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
-    String create(Foundation foundation);
+    String create(Foundation foundation) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void update(Foundation foundation);
