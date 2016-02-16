@@ -3,6 +3,7 @@ package edu.usm.web;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Views;
+import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.Response;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,12 @@ public class FoundationController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody Foundation foundation) {
+    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody Foundation foundation) throws NullDomainReference{
         Foundation fromDb = foundationService.findById(id);
+        if (null == fromDb) {
+            //TODO: replace with new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);
+        }
         //TODO: service method to ignore collections when updating
         foundationService.update(foundation);
         return Response.successGeneric();
@@ -50,5 +55,17 @@ public class FoundationController {
     @JsonView({Views.FoundationDetails.class})
     public Foundation getFoundation(@PathVariable("id") String id) {
         return foundationService.findById(id);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response deleteFoundation(@PathVariable("id") String id) throws NullDomainReference{
+        Foundation foundation = foundationService.findById(id);
+        if (null == foundation) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);
+        }
+        foundationService.delete(foundation);
+        return Response.successGeneric();
     }
 }

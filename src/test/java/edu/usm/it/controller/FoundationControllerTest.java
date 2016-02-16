@@ -1,6 +1,5 @@
 package edu.usm.it.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Views;
@@ -9,13 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-
-
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by andrew on 2/12/16.
@@ -25,8 +20,9 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     @Autowired
     FoundationService foundationService;
 
+    final String FOUNDATIONS_BASE_URL = "/foundations/";
+
     Foundation foundation;
-    ObjectMapper mapper = new ObjectMapper();
 
     @Before
     public void setup() {
@@ -53,7 +49,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
 
     @Test
     public void testCreateFoundation() throws Exception {
-        BayardTestUtilities.performEntityPost("/foundations", foundation, mockMvc);
+        BayardTestUtilities.performEntityPost(FOUNDATIONS_BASE_URL, foundation, mockMvc);
         Foundation fromDb = foundationService.findAll().iterator().next();
         assertNotNull(fromDb);
         assertEquals(foundation.getName(), fromDb.getName());
@@ -62,7 +58,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     @Test
     public void testGetFoundation() throws Exception {
         foundationService.create(foundation);
-        BayardTestUtilities.performEntityGetSingle(Views.FoundationDetails.class, "/foundations/"+foundation.getId(), mockMvc, foundation);
+        BayardTestUtilities.performEntityGetSingle(Views.FoundationDetails.class, FOUNDATIONS_BASE_URL + foundation.getId(), mockMvc, foundation);
     }
 
     @Test
@@ -71,7 +67,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         Foundation secondFoundation = makeSecondFoundation();
         foundationService.create(secondFoundation);
 
-        BayardTestUtilities.performEntityGetMultiple(Views.FoundationList.class, "/foundations", mockMvc, foundation, secondFoundation);
+        BayardTestUtilities.performEntityGetMultiple(Views.FoundationList.class, FOUNDATIONS_BASE_URL, mockMvc, foundation, secondFoundation);
     }
 
     private Foundation makeSecondFoundation() {
@@ -92,10 +88,22 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         String newFoundationName = "New Name for the Foundation";
         foundation.setName(newFoundationName);
 
-        BayardTestUtilities.performEntityPut("/foundations/"+foundation.getId(), foundation, mockMvc);
+        BayardTestUtilities.performEntityPut(FOUNDATIONS_BASE_URL + foundation.getId(), foundation, mockMvc);
 
         Foundation fromDb = foundationService.findById(foundation.getId());
         assertEquals(newFoundationName, fromDb.getName());
+    }
+
+    @Test
+    public void testDeleteFoundation() throws Exception {
+        foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+        assertNotNull(foundation);
+
+        BayardTestUtilities.performEntityDelete(FOUNDATIONS_BASE_URL + foundation.getId(), mockMvc);
+
+        foundation = foundationService.findById(foundation.getId());
+        assertNull(foundation);
     }
 
 }

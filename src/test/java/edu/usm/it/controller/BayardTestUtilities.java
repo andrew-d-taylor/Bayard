@@ -16,9 +16,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +28,12 @@ public final class BayardTestUtilities {
     private static Map<String, List<Field>> jsonViewEntityFields;
     public static List<Field> foundationDetailsFields;
     public static List<Field> foundationListFields;
+
+    public static void performEntityDelete(String url, MockMvc mockMvc) throws Exception {
+        mockMvc.perform(delete(url)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
     public static void performEntityPost(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(post(url)
