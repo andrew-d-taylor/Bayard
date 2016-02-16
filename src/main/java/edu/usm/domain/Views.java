@@ -3,28 +3,28 @@ package edu.usm.domain;
 /**
  * Defines the interfaces used with JSONView
  */
-public class Views {
-    public interface ContactList {}
-    public interface EventList {}
-    public interface OrganizationList {}
-    public interface CommitteeList {}
-    public interface CommitteeDetails{}
-    public interface ContactDetails {}
-    public interface ContactEncounterDetails {}
-    public interface DemographicDetails {}
-    public interface MemberInfo {}
+public interface Views {
+    interface ContactList{}
+    interface EventList {}
+    interface OrganizationList {}
+    interface CommitteeList {}
+    interface CommitteeDetails{}
+    interface ContactDetails {}
+    interface ContactEncounterDetails {}
+    interface DemographicDetails {}
+    interface MemberInfo {}
 
     /*For the contact details view. Doesn't contain membership information.*/
-    public interface ContactOrganizationDetails {}
-    public interface ContactCommitteeDetails {}
+    interface ContactOrganizationDetails {}
+    interface ContactCommitteeDetails {}
 
-    public interface UserDetails {}
+    interface UserDetails {}
 
-    public interface GroupList {}
-    public interface GroupDetails {}
-    public interface GroupPanel {}
+    interface GroupList {}
+    interface GroupDetails {}
+    interface GroupPanel {}
 
-    public interface FoundationList{}
-    public interface FoundationDetails{}
+    interface FoundationList extends Views{}
+    interface FoundationDetails extends Views{}
 
 }
