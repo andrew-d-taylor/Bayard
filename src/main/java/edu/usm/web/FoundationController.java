@@ -34,7 +34,7 @@ public class FoundationController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody FoundationDto foundationDto) throws NullDomainReference{
+    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody FoundationDto foundationDto) throws NullDomainReference, ConstraintViolation{
         Foundation fromDb = foundationService.findById(id);
         if (null == fromDb) {
             //TODO: replace with our new approach to handling 404s

@@ -58,12 +58,16 @@ public class FoundationServiceImpl implements FoundationService {
     }
 
     @Override
-    public void update(Foundation foundation) {
-        foundationDao.save(foundation);
+    public void update(Foundation foundation) throws ConstraintViolation{
+        try {
+            foundationDao.save(foundation);
+        } catch (DataIntegrityViolationException e) {
+            handlePersistenceException(foundation);
+        }
     }
 
     @Override
-    public void update(Foundation foundation, FoundationDto dto) {
+    public void update(Foundation foundation, FoundationDto dto) throws ConstraintViolation{
         foundation.setName(dto.getName());
         foundation.setAddress(dto.getAddress());
         foundation.setWebsite(dto.getWebsite());

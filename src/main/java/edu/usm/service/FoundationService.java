@@ -25,10 +25,10 @@ public interface FoundationService {
     String create(Foundation foundation) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
-    void update(Foundation foundation);
+    void update(Foundation foundation) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
-    void update(Foundation foundation, FoundationDto dto);
+    void update(Foundation foundation, FoundationDto dto) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void delete(Foundation foundation);
