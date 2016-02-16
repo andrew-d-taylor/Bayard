@@ -1,6 +1,5 @@
 package edu.usm.it.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usm.domain.BasicEntity;
 import edu.usm.domain.Foundation;
@@ -19,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,7 +36,13 @@ public final class BayardTestUtilities {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(entity)))
                 .andExpect(status().isCreated());
+    }
 
+    public static void performEntityPut(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
+        mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(entity)))
+                .andExpect(status().isOk());
     }
 
     /**

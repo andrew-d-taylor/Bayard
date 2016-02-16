@@ -29,6 +29,15 @@ public class FoundationController {
         return new Response(foundationId, Response.SUCCESS);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody Foundation foundation) {
+        Foundation fromDb = foundationService.findById(id);
+        //TODO: service method to ignore collections when updating
+        foundationService.update(foundation);
+        return Response.successGeneric();
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @JsonView({Views.FoundationList.class})

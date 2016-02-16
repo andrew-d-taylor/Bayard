@@ -60,6 +60,12 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     }
 
     @Test
+    public void testGetFoundation() throws Exception {
+        foundationService.create(foundation);
+        BayardTestUtilities.performEntityGetSingle(Views.FoundationDetails.class, "/foundations/"+foundation.getId(), mockMvc, foundation);
+    }
+
+    @Test
     public void testGetAllFoundations() throws Exception {
         foundationService.create(foundation);
         Foundation secondFoundation = makeSecondFoundation();
@@ -78,9 +84,18 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     }
 
     @Test
-    public void testGetFoundation() throws Exception {
+    public void testUpdateFoundation() throws Exception{
         foundationService.create(foundation);
-        BayardTestUtilities.performEntityGetSingle(Views.FoundationDetails.class, "/foundations/"+foundation.getId(), mockMvc, foundation);
+        foundation = foundationService.findById(foundation.getId());
+        assertNotNull(foundation);
+
+        String newFoundationName = "New Name for the Foundation";
+        foundation.setName(newFoundationName);
+
+        BayardTestUtilities.performEntityPut("/foundations/"+foundation.getId(), foundation, mockMvc);
+
+        Foundation fromDb = foundationService.findById(foundation.getId());
+        assertEquals(newFoundationName, fromDb.getName());
     }
 
 }
