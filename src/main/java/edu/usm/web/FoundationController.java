@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Views;
 import edu.usm.domain.exception.NullDomainReference;
+import edu.usm.dto.FoundationDto;
 import edu.usm.dto.Response;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,13 @@ public class FoundationController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody Foundation foundation) throws NullDomainReference{
+    public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody FoundationDto foundationDto) throws NullDomainReference{
         Foundation fromDb = foundationService.findById(id);
         if (null == fromDb) {
-            //TODO: replace with new approach to handling 404s
+            //TODO: replace with our new approach to handling 404s
             throw new NullDomainReference.NullFoundation(id);
         }
-        //TODO: service method to ignore collections when updating
-        foundationService.update(foundation);
+        foundationService.update(fromDb, foundationDto);
         return Response.successGeneric();
     }
 
@@ -53,8 +53,13 @@ public class FoundationController {
     @RequestMapping(value= "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @JsonView({Views.FoundationDetails.class})
-    public Foundation getFoundation(@PathVariable("id") String id) {
-        return foundationService.findById(id);
+    public Foundation getFoundation(@PathVariable("id") String id)  throws NullDomainReference{
+        Foundation foundation = foundationService.findById(id);
+        if (null == foundation) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);
+        }
+        return foundation;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)

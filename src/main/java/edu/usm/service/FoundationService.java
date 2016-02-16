@@ -1,6 +1,7 @@
 package edu.usm.service;
 
 import edu.usm.domain.Foundation;
+import edu.usm.dto.FoundationDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -21,6 +22,9 @@ public interface FoundationService {
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void update(Foundation foundation);
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void update(Foundation foundation, FoundationDto dto);
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void delete(Foundation foundation);

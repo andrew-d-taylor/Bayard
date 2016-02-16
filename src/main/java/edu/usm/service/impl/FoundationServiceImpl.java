@@ -1,6 +1,7 @@
 package edu.usm.service.impl;
 
 import edu.usm.domain.Foundation;
+import edu.usm.dto.FoundationDto;
 import edu.usm.repository.FoundationDao;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,24 @@ public class FoundationServiceImpl implements FoundationService {
     @Override
     public void update(Foundation foundation) {
         foundationDao.save(foundation);
+    }
+
+    @Override
+    public void update(Foundation foundation, FoundationDto dto) {
+        foundation.setName(dto.getName());
+        foundation.setAddress(dto.getAddress());
+        foundation.setWebsite(dto.getWebsite());
+        foundation.setCurrentGrantor(dto.isCurrentGrantor());
+        foundation.setPrimaryContactName(dto.getPrimaryContactName());
+        foundation.setPrimaryContactTitle(dto.getPrimaryContactTitle());
+        foundation.setPrimaryContactPhone(dto.getPrimaryContactPhone());
+        foundation.setPrimaryContactEmail(dto.getPrimaryContactEmail());
+        foundation.setSecondaryContactName(dto.getSecondaryContactName());
+        foundation.setSecondaryContactTitle(dto.getSecondaryContactTitle());
+        foundation.setSecondaryContactPhone(dto.getSecondaryContactPhone());
+        foundation.setSecondaryContactEmail(dto.getSecondaryContactEmail());
+
+        update(foundation);
     }
 
     @Override
