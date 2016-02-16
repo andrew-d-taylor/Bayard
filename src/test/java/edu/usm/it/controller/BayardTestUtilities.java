@@ -1,5 +1,7 @@
 package edu.usm.it.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usm.domain.BasicEntity;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Views;
@@ -16,7 +18,9 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by andrew on 2/15/16.
@@ -26,6 +30,14 @@ public final class BayardTestUtilities {
     private static Map<String, List<Field>> jsonViewEntityFields;
     public static List<Field> foundationDetailsFields;
     public static List<Field> foundationListFields;
+
+    public static void performEntityPost(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(entity)))
+                .andExpect(status().isCreated());
+
+    }
 
     /**
      * Validates that the field values for the provided BasicEntity exist in the response to a MockMvc GET request

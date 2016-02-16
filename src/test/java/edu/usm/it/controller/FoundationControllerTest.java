@@ -53,11 +53,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
 
     @Test
     public void testCreateFoundation() throws Exception {
-        String json = mapper.writeValueAsString(foundation);
-        mockMvc.perform(post("/foundations")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isCreated());
+        BayardTestUtilities.performEntityPost("/foundations", foundation, mockMvc);
         Foundation fromDb = foundationService.findAll().iterator().next();
         assertNotNull(fromDb);
         assertEquals(foundation.getName(), fromDb.getName());
@@ -66,15 +62,19 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     @Test
     public void testGetAllFoundations() throws Exception {
         foundationService.create(foundation);
+        Foundation secondFoundation = makeSecondFoundation();
+        foundationService.create(secondFoundation);
+
+        BayardTestUtilities.performEntityGetMultiple(Views.FoundationList.class, "/foundations", mockMvc, foundation, secondFoundation);
+    }
+
+    private Foundation makeSecondFoundation() {
         Foundation secondFoundation = new Foundation("Second Foundation");
         secondFoundation.setPrimaryContactEmail("primary@contact.email");
         secondFoundation.setAddress("987 Ave Americas");
         secondFoundation.setPrimaryContactName("Another Primary Contact");
         secondFoundation.setPhoneNumber("123-321-2121");
-        foundationService.create(secondFoundation);
-
-        BayardTestUtilities.performEntityGetMultiple(Views.FoundationList.class, "/foundations", mockMvc, foundation, secondFoundation);
-
+        return secondFoundation;
     }
 
     @Test
