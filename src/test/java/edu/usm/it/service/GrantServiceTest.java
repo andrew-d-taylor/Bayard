@@ -3,6 +3,9 @@ package edu.usm.it.service;
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.UserFileUpload;
+import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.repository.UserFileUploadDao;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.junit.After;
@@ -12,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by andrew on 2/16/16.
@@ -25,8 +28,14 @@ public class GrantServiceTest extends WebAppConfigurationAware {
     @Autowired
     FoundationService foundationService;
 
+    @Autowired
+    UserFileUploadDao fileDao;
+
     Foundation foundation;
     Grant grant;
+    UserFileUpload userFileUpload;
+    private int fileLength = 10;
+    private byte[] fileData = new byte[fileLength];
 
     @Before
     public void setup() throws Exception{
@@ -43,6 +52,16 @@ public class GrantServiceTest extends WebAppConfigurationAware {
         grant.setStartPeriod(LocalDate.of(2015, 6, 1));
         grant.setEndPeriod(LocalDate.of(2016, 6, 1));
         grant.setRestriction("Administration expenses");
+
+        userFileUpload = new UserFileUpload();
+        for (int i = 0; i < fileLength; i++) {
+            fileData[i] = (byte)i;
+        }
+        userFileUpload.setFileContent(fileData);
+        userFileUpload.setFileType(".properties");
+        userFileUpload.setFileName("application.properties");
+        userFileUpload.setDescription("A test file");
+        grant.addFileUpload(userFileUpload);
     }
 
     @After
@@ -54,8 +73,39 @@ public class GrantServiceTest extends WebAppConfigurationAware {
     @Test
     public void testCreateGrant() {
         grantService.create(grant);
+
         grant = grantService.findById(grant.getId());
         assertNotNull(grant);
+        assertTrue(grant.getFileUploads().contains(userFileUpload));
+        foundation = foundationService.findById(foundation.getId());
+        assertTrue(foundation.getGrants().contains(grant));
+    }
+
+    @Test
+    public void testUpdateGrant() {
+        grantService.create(grant);
+        grant = grantService.findById(grant.getId());
+        String newName = "New Grant Name";
+        grant.setName(newName);
+        grantService.update(grant);
+
+        grant = grantService.findById(grant.getId());
+        assertEquals(newName, grant.getName());
+    }
+
+    @Test
+    public void testDeleteGrant() throws ConstraintViolation{
+        testCreateGrant();
+        grantService.delete(grant);
+
+        grant = grantService.findById(grant.getId());
+        assertNull(grant);
+
+        foundation = foundationService.findById(foundation.getId());
+        assertFalse(foundation.getGrants().contains(grant));
+
+        userFileUpload = fileDao.findOne(userFileUpload.getId());
+        assertNull(userFileUpload);
     }
 
 }
