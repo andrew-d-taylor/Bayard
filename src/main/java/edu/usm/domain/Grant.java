@@ -1,5 +1,7 @@
 package edu.usm.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -16,41 +18,53 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
 
     @Column
     @NotNull
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private String name;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private LocalDate startPeriod;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private LocalDate endPeriod;
 
     @Column
+    @JsonView({Views.GrantDetails.class})
     private String restriction;
 
     @Column
+    @JsonView({Views.GrantDetails.class})
     private String description;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private LocalDate intentDeadline;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private LocalDate applicationDeadline;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private LocalDate reportDeadline;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private int amountAppliedFor;
 
     @Column
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private int amountReceived;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "foundation_id")
+    @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private Foundation foundation;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "grant_id")
+    @JsonView({Views.GrantDetails.class})
     private Set<UserFileUpload> fileUploads;
 
     public Grant() {

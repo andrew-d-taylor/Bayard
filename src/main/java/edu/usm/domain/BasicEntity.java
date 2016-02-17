@@ -36,7 +36,9 @@ public abstract class BasicEntity {
             Views.DemographicDetails.class,
             Views.CommitteeDetails.class,
             Views.FoundationDetails.class,
-            Views.FoundationList.class})
+            Views.FoundationList.class,
+            Views.GrantList.class,
+            Views.GrantDetails.class})
     private String id;
 
     @Column

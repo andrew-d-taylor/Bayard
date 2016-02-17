@@ -27,4 +27,7 @@ public interface Views {
     interface FoundationList extends Views{}
     interface FoundationDetails extends Views{}
 
+    interface GrantList extends Views{}
+    interface GrantDetails extends Views{}
+
 }

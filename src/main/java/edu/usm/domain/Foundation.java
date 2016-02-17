@@ -19,7 +19,10 @@ public class Foundation extends BasicEntity implements Serializable{
 
     @Column(unique = true)
     @NotNull
-    @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
+    @JsonView({Views.FoundationDetails.class,
+            Views.FoundationList.class,
+            Views.GrantDetails.class,
+            Views.GrantList.class})
     private String name;
 
     @Column
