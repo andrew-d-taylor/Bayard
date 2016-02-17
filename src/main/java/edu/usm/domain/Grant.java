@@ -238,8 +238,7 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
             if (getName() != null) {
                 return (getName() + getCreated()).hashCode();
             }
-            //TODO: this needs to be fixed. Generates hash conflict when > 1 relating entities are instantiated
-            //but have yet to be persisted.
+            //TODO: only necessary as a workaround to the problematic hashCode of BasicEntity
             return getCreated().hashCode();
         }
     }
