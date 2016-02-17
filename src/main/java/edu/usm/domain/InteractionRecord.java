@@ -34,7 +34,7 @@ public class InteractionRecord extends BasicEntity implements Serializable {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Foundation foundation;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "interaction_record_id")
     private Set<UserFileUpload> fileUploads;
 

@@ -1,8 +1,11 @@
  package edu.usm.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -67,11 +70,11 @@ public class Foundation extends BasicEntity implements Serializable{
     @JsonView({Views.FoundationDetails.class, Views.FoundationList.class})
     private boolean currentGrantor;
 
-    @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonView({Views.FoundationDetails.class})
     private Set<InteractionRecord> interactionRecords;
 
-    @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "foundation", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonView({Views.FoundationDetails.class})
     private Set<Grant> grants;
 

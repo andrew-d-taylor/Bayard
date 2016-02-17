@@ -49,7 +49,7 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
     @JoinColumn(name = "foundation_id")
     private Foundation foundation;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "grant_id")
     private Set<UserFileUpload> fileUploads;
 
