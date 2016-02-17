@@ -2,8 +2,10 @@ package edu.usm.it.service;
 
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.service.FoundationService;
+import edu.usm.service.GrantService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +24,11 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
     @Autowired
     FoundationService foundationService;
 
+    @Autowired
+    GrantService grantService;
+
     Foundation foundation;
+    Grant grant;
 
     @Before
     public void setup() {
@@ -30,6 +36,10 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundation.setAddress("123 Lane Ave");
         foundation.setCurrentGrantor(false);
         foundation.setPhoneNumber("123-321-412");
+
+        grant = new Grant();
+        grant.setName("Test Grant");
+        grant.setFoundation(foundation);
     }
 
     @After
@@ -40,6 +50,10 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
     @Test
     public void testCreateFoundation() throws ConstraintViolation{
         foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+        assertNotNull(foundation);
+        grant = grantService.findById(grant.getId());
+        assertNotNull(grant);
     }
 
     @Test
@@ -62,6 +76,9 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundationService.delete(foundation);
         foundation = foundationService.findById(foundation.getId());
         assertNull(foundation);
+
+        grant = grantService.findById(grant.getId());
+        assertNull(grant);
     }
 
     @Test
@@ -77,6 +94,9 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundationService.deleteAll();
         Set<Foundation> shouldBeEmpty = foundationService.findAll();
         assertTrue(shouldBeEmpty.isEmpty());
+
+        Set<Grant> shouldAlsoBeEmpty = grantService.findAll();
+        assertTrue(shouldAlsoBeEmpty.isEmpty());
     }
 
 }
