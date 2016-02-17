@@ -1,7 +1,13 @@
 package edu.usm.service.impl;
 
+import edu.usm.domain.Contact;
+import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.domain.exception.NullDomainReference;
+import edu.usm.repository.FoundationDao;
 import edu.usm.repository.GrantDao;
+import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +23,27 @@ public class GrantServiceImpl implements GrantService {
     @Autowired
     private GrantDao grantDao;
 
+    @Autowired
+    private FoundationService foundationService;
+
     @Override
     public void deleteAll() {
-        findAll().stream().forEach(this::delete);
+        findAll().stream().forEach(this::uncheckedDelete);
+    }
+
+    private void uncheckedDelete(Grant grant) {
+        try {
+            delete(grant);
+        } catch (ConstraintViolation e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void delete(Grant grant) {
-        grantDao.delete(grant);
+    public void delete(Grant grant) throws ConstraintViolation {
+        Foundation foundation = grant.getFoundation();
+        foundation.getGrants().remove(grant);
+        foundationService.update(foundation);
     }
 
     @Override

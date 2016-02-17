@@ -1,6 +1,7 @@
 package edu.usm.service;
 
 import edu.usm.domain.Grant;
+import edu.usm.domain.exception.ConstraintViolation;
 
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public interface GrantService {
     Set<Grant> findAll();
     String create(Grant grant);
     void update(Grant grant);
-    void delete(Grant grant);
+    void delete(Grant grant) throws ConstraintViolation;
     void deleteAll();
 
 }
