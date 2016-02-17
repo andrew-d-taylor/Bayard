@@ -139,6 +139,13 @@ public abstract class NullDomainReference extends Exception {
         }
     }
 
+    public static class NullGrant extends NullDomainReference {
+
+        public NullGrant(String id) {
+            super(messageConstructor(Grant.class.getSimpleName(),id));
+        }
+
+    }
 
     protected static String messageConstructor(String domainClass, String id) {
         return domainClass+" with id : "+id+" does not exist";

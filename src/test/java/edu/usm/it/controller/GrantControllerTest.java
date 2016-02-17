@@ -74,9 +74,18 @@ public class GrantControllerTest extends WebAppConfigurationAware{
         foundationService.create(foundation);
         foundation = foundationService.findById(foundation.getId());
         assertEquals(2, grantService.findAll().size());
-        assertNotNull(grantService.findAll().iterator().next().getReportDeadline());
-        assertNotNull(grantService.findAll().iterator().next().getStartPeriod());
         BayardTestUtilities.performEntityGetMultiple(Views.GrantList.class, GRANTS_BASE_URL, mockMvc, grantOne, grantTwo);
+    }
+
+    @Test
+    public void testGetGrant() throws Exception {
+        foundationService.create(foundation);
+        BayardTestUtilities.performEntityGetSingle(Views.GrantDetails.class, GRANTS_BASE_URL+grantOne.getId(), mockMvc, grantOne);
+    }
+
+    @Test
+    public void testCreateGrant() throws Exception {
+
     }
 
 }
