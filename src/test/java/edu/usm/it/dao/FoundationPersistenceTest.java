@@ -99,6 +99,18 @@ public class FoundationPersistenceTest extends WebAppConfigurationAware {
         assertEquals(fileData, grant.getFileUploads().iterator().next().getFileContent());
     }
 
+    @Test
+    public void testCreateFoundationMultipleGrants() {
+        foundationDao.save(foundation);
+        foundation = foundationDao.findOne(foundation.getId());
+        Grant secondGrant = new Grant("Second Grant", foundation);
+        foundation.getGrants().add(secondGrant);
+        foundationDao.save(foundation);
+
+        foundation = foundationDao.findOne(foundation.getId());
+        assertEquals(2, foundation.getGrants().size());
+    }
+
     @Test(expected = DataAccessException.class)
     public void testCreateFoundationDuplicateName() {
         foundationDao.save(foundation);

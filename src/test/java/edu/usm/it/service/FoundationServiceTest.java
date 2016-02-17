@@ -53,7 +53,15 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundationService.create(foundation);
         foundation = foundationService.findById(foundation.getId());
         assertNotNull(foundation);
-        assertEquals(grant, foundation.getGrants().iterator().next());
+        assertTrue(foundation.getGrants().contains(grant));
+    }
+
+    @Test
+    public void testCreateFoundationMultipleGrants() throws ConstraintViolation {
+        Grant secondGrant = new Grant("Second Grant", foundation);
+        foundation.getGrants().add(secondGrant);
+        testCreateFoundation();
+        assertEquals(2, foundation.getGrants().size());
     }
 
     @Test
