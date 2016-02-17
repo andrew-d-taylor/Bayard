@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.swing.text.View;
 import java.time.LocalDateTime;
 
 /**
@@ -33,7 +34,9 @@ public abstract class BasicEntity {
             Views.GroupDetails.class,
             Views.GroupPanel.class,
             Views.DemographicDetails.class,
-            Views.CommitteeDetails.class})
+            Views.CommitteeDetails.class,
+            Views.FoundationDetails.class,
+            Views.FoundationList.class})
     private String id;
 
     @Column
