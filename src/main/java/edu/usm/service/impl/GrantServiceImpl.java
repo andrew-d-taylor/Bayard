@@ -51,6 +51,7 @@ public class GrantServiceImpl implements GrantService {
         try {
             grantDao.save(grant);
         } catch (DataAccessException | TransactionSystemException e) {
+            //TODO: revisit when working on the new validation approach
             handlePersistenceException(grant);
         }
     }
@@ -60,6 +61,7 @@ public class GrantServiceImpl implements GrantService {
         try {
             grantDao.save(grant);
         } catch (DataAccessException | TransactionSystemException e) {
+            //TODO: revisit when working on the new validation approach
             handlePersistenceException(grant);
         }
         return grant.getId();
