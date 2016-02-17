@@ -106,6 +106,8 @@ public abstract class BasicEntity {
         if (getId() != null) {
             return (getId() + getCreated()).hashCode();
         } else {
+            //TODO: this needs to be fixed. Generates hash conflict when > 1 relating entities are instantiated
+            //but have yet to be persisted.
             return getCreated().hashCode();
         }
 
