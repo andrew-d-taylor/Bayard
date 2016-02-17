@@ -229,4 +229,18 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
     public void setAmountReceived(int amountReceived) {
         this.amountReceived = amountReceived;
     }
+
+    @Override
+    public int hashCode() {
+        if (getId() != null) {
+            return (getId() + getCreated()).hashCode();
+        } else {
+            if (getName() != null) {
+                return (getName() + getCreated()).hashCode();
+            }
+            //TODO: this needs to be fixed. Generates hash conflict when > 1 relating entities are instantiated
+            //but have yet to be persisted.
+            return getCreated().hashCode();
+        }
+    }
 }
