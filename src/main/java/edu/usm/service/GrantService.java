@@ -12,8 +12,8 @@ public interface GrantService {
 
     Grant findById(String id);
     Set<Grant> findAll();
-    String create(Grant grant);
-    void update(Grant grant);
+    String create(Grant grant) throws ConstraintViolation;
+    void update(Grant grant) throws ConstraintViolation;
     void delete(Grant grant) throws ConstraintViolation;
     void deleteAll();
 

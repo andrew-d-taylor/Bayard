@@ -28,7 +28,8 @@ public enum ConstraintMessage {
     USER_NO_PASSWORD("A user must have a password associated with it."),
     USER_PASSWORD_TOO_SHORT("The password provided was not long enough."),
     FOUNDATION_REQUIRED_NAME("A foundation must have a name associated with it"),
-    FOUNDATION_DUPLICATE_NAME("A foundation with that name already exists.");
+    FOUNDATION_DUPLICATE_NAME("A foundation with that name already exists."),
+    GRANT_REQUIRED_NAME("A grant must have a name associated with it.");
 
     private final String enumText;
 

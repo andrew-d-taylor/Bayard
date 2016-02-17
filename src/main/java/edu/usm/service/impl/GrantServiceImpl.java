@@ -1,16 +1,16 @@
 package edu.usm.service.impl;
 
-import edu.usm.domain.Contact;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
-import edu.usm.domain.exception.NullDomainReference;
-import edu.usm.repository.FoundationDao;
 import edu.usm.repository.GrantDao;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import java.util.Set;
 
@@ -47,14 +47,29 @@ public class GrantServiceImpl implements GrantService {
     }
 
     @Override
-    public void update(Grant grant) {
-        grantDao.save(grant);
+    public void update(Grant grant) throws ConstraintViolation {
+        try {
+            grantDao.save(grant);
+        } catch (DataAccessException | TransactionSystemException e) {
+            handlePersistenceException(grant);
+        }
     }
 
     @Override
-    public String create(Grant grant) {
-        grantDao.save(grant);
+    public String create(Grant grant) throws ConstraintViolation {
+        try {
+            grantDao.save(grant);
+        } catch (DataAccessException | TransactionSystemException e) {
+            handlePersistenceException(grant);
+        }
         return grant.getId();
+    }
+
+    private void handlePersistenceException(Grant grant) throws ConstraintViolation{
+        if (null == grant.getName()) {
+            throw new ConstraintViolation(ConstraintMessage.GRANT_REQUIRED_NAME);
+        }
+        throw new ConstraintViolation();
     }
 
     @Override

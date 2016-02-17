@@ -7,8 +7,9 @@ import edu.usm.dto.FoundationDto;
 import edu.usm.repository.FoundationDao;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import java.util.Set;
 
@@ -40,7 +41,8 @@ public class FoundationServiceImpl implements FoundationService {
     public String create(Foundation foundation) throws ConstraintViolation {
         try {
             foundationDao.save(foundation);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataAccessException | TransactionSystemException e) {
+            //TODO: revisit when working on the new validation approach
             handlePersistenceException(foundation);
         }
         return foundation.getId();
@@ -61,7 +63,8 @@ public class FoundationServiceImpl implements FoundationService {
     public void update(Foundation foundation) throws ConstraintViolation{
         try {
             foundationDao.save(foundation);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataAccessException e) {
+            //TODO: revisit when working on the new validation approach
             handlePersistenceException(foundation);
         }
     }
