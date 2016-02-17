@@ -3,12 +3,14 @@ package edu.usm.it.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usm.domain.BasicEntity;
 import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,8 @@ public final class BayardTestUtilities {
     private static Map<String, List<Field>> jsonViewEntityFields;
     public static List<Field> foundationDetailsFields;
     public static List<Field> foundationListFields;
+    public static List<Field> grantDetailsFields;
+    public static List<Field> grantListFields;
 
     public static void performEntityDelete(String url, MockMvc mockMvc) throws Exception {
         mockMvc.perform(delete(url)
@@ -66,7 +70,11 @@ public final class BayardTestUtilities {
         for(Field field: classFields) {
             field.setAccessible(true);
             if (field.get(entity) != null) {
-                resultActions.andExpect(jsonPath("$."+field.getName(), is(field.get(entity))));
+                Object fieldValue = field.get(entity);
+                if (field.getType() == LocalDate.class) {
+                    fieldValue = fieldValue.toString();
+                }
+                resultActions.andExpect(jsonPath("$."+field.getName(), is(fieldValue)));
             }
         }
 
@@ -92,7 +100,12 @@ public final class BayardTestUtilities {
             List<Object> existingValues = new ArrayList<>();
             for (BasicEntity entity: entities) {
                 if (null != field.get(entity)) {
-                    existingValues.add(field.get(entity));
+                    Object fieldValue = field.get(entity);
+                    //Bayard serializes LocalDates to its simple String representation
+                    if (field.getType() == LocalDate.class) {
+                        fieldValue = fieldValue.toString();
+                    }
+                    existingValues.add(fieldValue);
                 }
             }
             resultActions.andExpect(jsonPath("$.[*]."+field.getName(), containsInAnyOrder(existingValues.toArray())));
@@ -135,6 +148,22 @@ public final class BayardTestUtilities {
             foundationDetailsFields.add(Foundation.class.getDeclaredField("secondaryContactPhone"));
             foundationDetailsFields.add(Foundation.class.getDeclaredField("secondaryContactEmail"));
             jsonViewEntityFields.put(Views.FoundationDetails.class.getSimpleName(), foundationDetailsFields);
+
+            grantListFields = new ArrayList<>();
+            grantListFields.add(Grant.class.getDeclaredField("name"));
+            grantListFields.add(Grant.class.getDeclaredField("startPeriod"));
+            grantListFields.add(Grant.class.getDeclaredField("endPeriod"));
+            grantListFields.add(Grant.class.getDeclaredField("intentDeadline"));
+            grantListFields.add(Grant.class.getDeclaredField("applicationDeadline"));
+            grantListFields.add(Grant.class.getDeclaredField("reportDeadline"));
+            grantListFields.add(Grant.class.getDeclaredField("amountAppliedFor"));
+            grantListFields.add(Grant.class.getDeclaredField("amountReceived"));
+            jsonViewEntityFields.put(Views.GrantList.class.getSimpleName(), grantListFields);
+
+            grantDetailsFields = new ArrayList<>(grantListFields);
+            grantDetailsFields.add(Grant.class.getDeclaredField("description"));
+            grantDetailsFields.add(Grant.class.getDeclaredField("restriction"));
+            jsonViewEntityFields.put(Views.GrantDetails.class.getSimpleName(), grantDetailsFields);
 
         } catch (NoSuchFieldException e) {
 
