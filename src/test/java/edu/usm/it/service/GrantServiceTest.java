@@ -71,7 +71,7 @@ public class GrantServiceTest extends WebAppConfigurationAware {
     }
 
     @Test
-    public void testCreateGrant() {
+    public void testCreateGrant() throws ConstraintViolation{
         grantService.create(grant);
 
         grant = grantService.findById(grant.getId());
@@ -82,7 +82,7 @@ public class GrantServiceTest extends WebAppConfigurationAware {
     }
 
     @Test
-    public void testUpdateGrant() {
+    public void testUpdateGrant() throws ConstraintViolation{
         grantService.create(grant);
         grant = grantService.findById(grant.getId());
         String newName = "New Grant Name";
@@ -106,6 +106,12 @@ public class GrantServiceTest extends WebAppConfigurationAware {
 
         userFileUpload = fileDao.findOne(userFileUpload.getId());
         assertNull(userFileUpload);
+    }
+
+    @Test(expected = ConstraintViolation.class)
+    public void testCreateGrantNullName() throws ConstraintViolation{
+        grant.setName(null);
+        grantService.create(grant);
     }
 
 }

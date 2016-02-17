@@ -40,6 +40,7 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         grant = new Grant();
         grant.setName("Test Grant");
         grant.setFoundation(foundation);
+        foundation.getGrants().add(grant);
     }
 
     @After
@@ -52,8 +53,7 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundationService.create(foundation);
         foundation = foundationService.findById(foundation.getId());
         assertNotNull(foundation);
-        grant = grantService.findById(grant.getId());
-        assertNotNull(grant);
+        assertEquals(grant, foundation.getGrants().iterator().next());
     }
 
     @Test
@@ -77,8 +77,9 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundation = foundationService.findById(foundation.getId());
         assertNull(foundation);
 
-        grant = grantService.findById(grant.getId());
-        assertNull(grant);
+        Set<Grant> shouldBeEmpty = grantService.findAll();
+        assertTrue(shouldBeEmpty.isEmpty());
+
     }
 
     @Test
