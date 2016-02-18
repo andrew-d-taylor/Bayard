@@ -94,43 +94,4 @@ public class FoundationController {
         return Response.successGeneric();
     }
 
-    @RequestMapping(value = "/{id}/grants/{grantId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public Response deleteGrant(@PathVariable("id")String id, @PathVariable("grantId")String grantId) throws NullDomainReference, ConstraintViolation {
-        Foundation foundation = foundationService.findById(id);
-        Grant grant = grantService.findById(grantId);
-        if (null == foundation) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);        }
-        if (null == grant) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullGrant(grantId);
-        }
-        foundationService.deleteGrant(foundation, grant);
-        return Response.successGeneric();
-    }
-
-    @RequestMapping(value = "/{id}/grants/{grantId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public Response updateGrantDetails(@PathVariable("id")String id, @PathVariable("grantId")String grantId, @RequestBody GrantDto grantDetails)
-            throws ConstraintViolation, NullDomainReference, InvalidApiRequestException {
-
-        Foundation foundation = foundationService.findById(id);
-        Grant grant = grantService.findById(grantId);
-
-        if (!foundation.equals(grant.getFoundation())) {
-            throw new InvalidApiRequestException("The grant with id: "+grantId+" does not belong to the foundation with id: "+id);
-        }
-        if (null == foundation) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);        }
-        if (null == grant) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullGrant(grantId);
-        }
-        grantService.updateGrantDetails(grant, grantDetails);
-        return Response.successGeneric();
-    }
-
-
 }

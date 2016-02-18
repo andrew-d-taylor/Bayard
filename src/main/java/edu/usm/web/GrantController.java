@@ -1,9 +1,14 @@
 package edu.usm.web;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
+import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.domain.exception.InvalidApiRequestException;
 import edu.usm.domain.exception.NullDomainReference;
+import edu.usm.dto.GrantDto;
+import edu.usm.dto.Response;
 import edu.usm.service.GrantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,5 +45,33 @@ public class GrantController {
         }
         return grant;
     }
+
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response deleteGrant(@PathVariable("id")String id) throws NullDomainReference, ConstraintViolation {
+        Grant grant = grantService.findById(id);
+        if (null == grant) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullGrant(id);
+        }
+        grantService.delete(grant);
+        return Response.successGeneric();
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response updateGrantDetails(@PathVariable("id")String id, @RequestBody GrantDto grantDetails)
+            throws ConstraintViolation, NullDomainReference, InvalidApiRequestException {
+
+        Grant grant = grantService.findById(id);
+        if (null == grant) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullGrant(id);
+        }
+        grantService.updateGrantDetails(grant, grantDetails);
+        return Response.successGeneric();
+    }
+
 
 }
