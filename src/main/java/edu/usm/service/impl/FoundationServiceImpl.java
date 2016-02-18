@@ -4,7 +4,9 @@ import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.FoundationDto;
+import edu.usm.dto.GrantDto;
 import edu.usm.repository.FoundationDao;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,8 +109,17 @@ public class FoundationServiceImpl implements FoundationService {
     }
 
     @Override
+    public void createGrant(Foundation foundation, GrantDto dto) throws ConstraintViolation {
+        Grant grant = new Grant();
+        DtoTransformer.fromDto(dto, grant);
+        createGrant(foundation, grant);
+    }
+
+    @Override
     public void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
         foundation.getGrants().remove(grant);
         update(foundation);
     }
+
+
 }

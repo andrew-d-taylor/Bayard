@@ -4,6 +4,7 @@ import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.GrantDto;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.junit.After;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.ConcurrentModificationException;
 import java.util.Set;
 
@@ -119,6 +121,29 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         foundation = foundationService.findById(foundation.getId());
 
         assertEquals(grant.getName(), foundation.getGrants().iterator().next().getName());
+    }
+
+    @Test
+    public void testCreateGrantFromDto() throws ConstraintViolation {
+        foundation.getGrants().remove(grant);
+        foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+
+        GrantDto dto = new GrantDto();
+        dto.setName("Test Grant");
+        dto.setAmountAppliedFor(100);
+        dto.setStartPeriod(LocalDate.now());
+        dto.setApplicationDeadline(LocalDate.now());
+        foundationService.createGrant(foundation, dto);
+
+        foundation = foundationService.findById(foundation.getId());
+        Grant fromDb = foundation.getGrants().iterator().next();
+
+        assertEquals(dto.getName(), fromDb.getName());
+        assertEquals(dto.getAmountAppliedFor(), fromDb.getAmountAppliedFor());
+        assertEquals(dto.getStartPeriod(), fromDb.getStartPeriod());
+        assertEquals(dto.getApplicationDeadline(), fromDb.getApplicationDeadline());
+
     }
 
     @Test

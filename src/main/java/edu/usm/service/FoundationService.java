@@ -4,6 +4,7 @@ import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
+import edu.usm.dto.GrantDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -41,7 +42,9 @@ public interface FoundationService {
     void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
-    void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
+    void createGrant(Foundation foundation, GrantDto dto) throws ConstraintViolation;
 
+    @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
 
 }
