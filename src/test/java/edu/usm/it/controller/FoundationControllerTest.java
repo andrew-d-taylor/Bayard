@@ -4,8 +4,7 @@ import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
-import edu.usm.dto.DtoTransformer;
-import edu.usm.dto.GrantDto;
+
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.junit.After;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -136,6 +134,21 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         assertEquals(grant.getIntentDeadline(), fromDb.getIntentDeadline());
         assertEquals(grant.getReportDeadline(), fromDb.getReportDeadline());
         assertEquals(grant.getAmountReceived(), fromDb.getAmountReceived());
+    }
+
+    @Test
+    public void testGetFoundationGrants() throws Exception {
+        Grant grantOne = new Grant("Grant One", foundation);
+        Grant grantTwo = new Grant("Grant Two", foundation);
+        foundation.addGrant(grantOne);
+        foundation.addGrant(grantTwo);
+        foundationService.create(foundation);
+
+        foundation = foundationService.findById(foundation.getId());
+        assertEquals(2, foundation.getGrants().size());
+        String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/grants";
+        BayardTestUtilities.performEntityGetMultiple(Views.GrantList.class, url, mockMvc, grantOne, grantTwo);
+
     }
 
 }

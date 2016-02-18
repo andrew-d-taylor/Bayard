@@ -94,4 +94,16 @@ public class FoundationController {
         return Response.successGeneric();
     }
 
+    @RequestMapping(value = "/{id}/grants", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView(Views.GrantList.class)
+    public Set<Grant> getFoundationGrants(@PathVariable("id")String id) throws NullDomainReference{
+        Foundation foundation = foundationService.findById(id);
+        if (null == foundation) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);
+        }
+        return foundation.getGrants();
+    }
+
 }
