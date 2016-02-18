@@ -4,6 +4,8 @@ import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
+import edu.usm.dto.DtoTransformer;
+import edu.usm.dto.GrantDto;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.junit.After;
@@ -156,6 +158,31 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         Set<Grant> shouldBeEmpty = grantService.findAll();
         assertTrue(shouldBeEmpty.isEmpty());
 
+    }
+
+    @Test
+    public void testUpdateGrantDetails() throws Exception {
+        foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+        Grant grant = new Grant("Test Grant", foundation);
+        grant.setApplicationDeadline(LocalDate.of(2017, 7, 7));
+        foundationService.createGrant(foundation, grant);
+        foundation = foundationService.findById(foundation.getId());
+        grant = foundation.getGrants().iterator().next();
+
+        String updatedName = "Name Updated";
+        LocalDate updatedDate = LocalDate.of(2016, 6, 6);
+        GrantDto dto = DtoTransformer.fromEntity(grant);
+        dto.setName(updatedName);
+        dto.setApplicationDeadline(updatedDate);
+
+        String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/grants/"+grant.getId();
+        BayardTestUtilities.performEntityPut(url, dto, mockMvc);
+
+        foundation = foundationService.findById(foundation.getId());
+        Grant fromDb = foundation.getGrants().iterator().next();
+        assertEquals(updatedName, fromDb.getName());
+        assertEquals(updatedDate, fromDb.getApplicationDeadline());
     }
 
 }

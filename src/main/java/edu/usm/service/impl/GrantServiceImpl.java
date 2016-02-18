@@ -4,6 +4,8 @@ import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.DtoTransformer;
+import edu.usm.dto.GrantDto;
 import edu.usm.repository.GrantDao;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
@@ -54,6 +56,12 @@ public class GrantServiceImpl implements GrantService {
             //TODO: revisit when working on the new validation approach
             handlePersistenceException(grant);
         }
+    }
+
+    @Override
+    public void updateGrantDetails(Grant grant, GrantDto newDetails) throws ConstraintViolation {
+        DtoTransformer.fromDto(newDetails, grant);
+        update(grant);
     }
 
     @Override

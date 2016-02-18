@@ -5,8 +5,10 @@ import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.domain.exception.InvalidApiRequestException;
 import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.FoundationDto;
+import edu.usm.dto.GrantDto;
 import edu.usm.dto.Response;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
@@ -82,7 +84,7 @@ public class FoundationController {
 
     @RequestMapping(value = "/{id}/grants", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Response createGrant(@PathVariable("id")String id, @RequestBody Grant grant) throws NullDomainReference, ConstraintViolation {
+    public Response createGrant(@PathVariable("id")String id, @RequestBody GrantDto grant) throws NullDomainReference, ConstraintViolation {
         Foundation foundation = foundationService.findById(id);
         if (null == foundation) {
             //TODO: replace with our new approach to handling 404s
@@ -107,5 +109,28 @@ public class FoundationController {
         foundationService.deleteGrant(foundation, grant);
         return Response.successGeneric();
     }
+
+    @RequestMapping(value = "/{id}/grants/{grantId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response updateGrantDetails(@PathVariable("id")String id, @PathVariable("grantId")String grantId, @RequestBody GrantDto grantDetails)
+            throws ConstraintViolation, NullDomainReference, InvalidApiRequestException {
+
+        Foundation foundation = foundationService.findById(id);
+        Grant grant = grantService.findById(grantId);
+
+        if (!foundation.equals(grant.getFoundation())) {
+            throw new InvalidApiRequestException("The grant with id: "+grantId+" does not belong to the foundation with id: "+id);
+        }
+        if (null == foundation) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);        }
+        if (null == grant) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullGrant(grantId);
+        }
+        grantService.updateGrantDetails(grant, grantDetails);
+        return Response.successGeneric();
+    }
+
 
 }
