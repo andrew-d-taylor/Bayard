@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -37,7 +38,7 @@ public class InteractionRecord extends BasicEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "interaction_record_id")
-    private Set<UserFileUpload> fileUploads;
+    private Set<UserFileUpload> fileUploads = new HashSet<>();
 
     public InteractionRecord() {
         super();
@@ -47,9 +48,11 @@ public class InteractionRecord extends BasicEntity implements Serializable {
      * @param personContacted the person contacted at the Foundation
      * @param dateOfInteraction when the interaction took place
      * @param interactionType the type of the interaction
+     * @param foundation the Foundation
      */
-    public InteractionRecord(String personContacted, LocalDate dateOfInteraction, String interactionType) {
+    public InteractionRecord(String personContacted, LocalDate dateOfInteraction, String interactionType, Foundation foundation) {
         super();
+        this.foundation = foundation;
         this.personContacted = personContacted;
         this.dateOfInteraction = dateOfInteraction;
         this.interactionType = interactionType;
