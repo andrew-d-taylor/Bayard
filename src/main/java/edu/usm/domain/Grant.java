@@ -65,6 +65,7 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "foundation_id")
+    @NotNull
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
     private Foundation foundation;
 

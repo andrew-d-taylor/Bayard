@@ -32,6 +32,7 @@ public class InteractionRecord extends BasicEntity implements Serializable {
     private boolean requiresFollowUp;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @NotNull
     private Foundation foundation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
