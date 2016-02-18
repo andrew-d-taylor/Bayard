@@ -1,6 +1,8 @@
 package edu.usm.it.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import edu.usm.domain.BasicEntity;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
@@ -33,6 +35,8 @@ public final class BayardTestUtilities {
     public static List<Field> grantDetailsFields;
     public static List<Field> grantListFields;
 
+    private static ObjectMapper objectMapper;
+
     public static void performEntityDelete(String url, MockMvc mockMvc) throws Exception {
         mockMvc.perform(delete(url)
                 .accept(MediaType.APPLICATION_JSON))
@@ -42,14 +46,14 @@ public final class BayardTestUtilities {
     public static void performEntityPost(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(entity)))
+                .content(objectMapper.writeValueAsString(entity)))
                 .andExpect(status().isCreated());
     }
 
     public static void performEntityPut(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(entity)))
+                .content(objectMapper.writeValueAsString(entity)))
                 .andExpect(status().isOk());
     }
 
@@ -128,6 +132,10 @@ public final class BayardTestUtilities {
      */
     static {
         try {
+            objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JSR310Module());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
             jsonViewEntityFields = new HashMap<>();
 
             foundationListFields = new ArrayList<>();
