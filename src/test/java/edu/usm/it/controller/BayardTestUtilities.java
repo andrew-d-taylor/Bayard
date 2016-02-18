@@ -38,12 +38,27 @@ public final class BayardTestUtilities {
 
     private static ObjectMapper objectMapper;
 
+    /**
+     * Validates an HttpStatus.OK response is returned by a DELETE to the given URL.
+     *
+     * @param url Where to make the DELETE request
+     * @param mockMvc The MockMvc dependency
+     * @throws Exception
+     */
     public static void performEntityDelete(String url, MockMvc mockMvc) throws Exception {
         mockMvc.perform(delete(url)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Validates an HttpStatus.CREATED response is returned by a POST to the given URL with the given entity as the
+     * serialized request body.
+     * @param url Where to make the POST request
+     * @param entity The entity to POST as the request body
+     * @param mockMvc The MockMvc dependency
+     * @throws Exception
+     */
     public static void performEntityPost(String url, Serializable entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,6 +66,14 @@ public final class BayardTestUtilities {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * Validates an HttpStatus.OK response is returned by a PUT to the given URL with the given entity as the
+     * serialized request body.
+     * @param url Where to make the PUT request
+     * @param entity The entity to PUT as the request body
+     * @param mockMvc The MockMvc dependency
+     * @throws Exception
+     */
     public static void performEntityPut(String url, Serializable entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON)
