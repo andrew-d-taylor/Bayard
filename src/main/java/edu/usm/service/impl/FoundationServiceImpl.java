@@ -9,6 +9,7 @@ import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.FoundationDto;
 import edu.usm.dto.GrantDto;
 import edu.usm.repository.FoundationDao;
+import edu.usm.service.BasicService;
 import edu.usm.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -21,7 +22,7 @@ import java.util.Set;
  * Created by andrew on 2/12/16.
  */
 @Service
-public class FoundationServiceImpl implements FoundationService {
+public class FoundationServiceImpl extends BasicService implements FoundationService {
 
     @Autowired
     private FoundationDao foundationDao;
@@ -44,6 +45,7 @@ public class FoundationServiceImpl implements FoundationService {
     @Override
     public String create(Foundation foundation) throws ConstraintViolation {
         try {
+            updateLastModified(foundation);
             foundationDao.save(foundation);
         } catch (DataAccessException | TransactionSystemException e) {
             //TODO: revisit when working on the new validation approach
@@ -66,6 +68,7 @@ public class FoundationServiceImpl implements FoundationService {
     @Override
     public void update(Foundation foundation) throws ConstraintViolation{
         try {
+            updateLastModified(foundation);
             foundationDao.save(foundation);
         } catch (DataAccessException e) {
             //TODO: revisit when working on the new validation approach
@@ -93,6 +96,7 @@ public class FoundationServiceImpl implements FoundationService {
 
     @Override
     public void delete(Foundation foundation) {
+        updateLastModified(foundation);
         foundationDao.delete(foundation);
     }
 
@@ -104,6 +108,7 @@ public class FoundationServiceImpl implements FoundationService {
 
     @Override
     public void createInteractionRecord(Foundation foundation, InteractionRecord interactionRecord) throws ConstraintViolation {
+        updateLastModified(interactionRecord);
         interactionRecord.setFoundation(foundation);
         foundation.addInteractionRecord(interactionRecord);
         update(foundation);
@@ -111,6 +116,7 @@ public class FoundationServiceImpl implements FoundationService {
 
     @Override
     public void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
+        updateLastModified(grant);
         foundation.addGrant(grant);
         grant.setFoundation(foundation);
         update(foundation);
@@ -126,6 +132,7 @@ public class FoundationServiceImpl implements FoundationService {
     @Override
     public void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
         foundation.getGrants().remove(grant);
+        updateLastModified(grant);
         update(foundation);
     }
 

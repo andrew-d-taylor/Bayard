@@ -7,6 +7,7 @@ import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.GrantDto;
 import edu.usm.repository.GrantDao;
+import edu.usm.service.BasicService;
 import edu.usm.service.FoundationService;
 import edu.usm.service.GrantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.Set;
  * Created by andrew on 2/16/16.
  */
 @Service
-public class GrantServiceImpl implements GrantService {
+public class GrantServiceImpl extends BasicService implements GrantService {
 
     @Autowired
     private GrantDao grantDao;
@@ -43,6 +44,7 @@ public class GrantServiceImpl implements GrantService {
 
     @Override
     public void delete(Grant grant) throws ConstraintViolation {
+        updateLastModified(grant);
         Foundation foundation = grant.getFoundation();
         foundation.getGrants().remove(grant);
         foundationService.update(foundation);
@@ -51,6 +53,7 @@ public class GrantServiceImpl implements GrantService {
     @Override
     public void update(Grant grant) throws ConstraintViolation {
         try {
+            updateLastModified(grant);
             grantDao.save(grant);
         } catch (DataAccessException | TransactionSystemException e) {
             //TODO: revisit when working on the new validation approach
@@ -67,6 +70,7 @@ public class GrantServiceImpl implements GrantService {
     @Override
     public String create(Grant grant) throws ConstraintViolation {
         try {
+            updateLastModified(grant);
             grantDao.save(grant);
         } catch (DataAccessException | TransactionSystemException e) {
             //TODO: revisit when working on the new validation approach

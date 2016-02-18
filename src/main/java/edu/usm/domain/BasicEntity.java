@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.swing.text.View;
 import java.time.LocalDateTime;
 
 /**
