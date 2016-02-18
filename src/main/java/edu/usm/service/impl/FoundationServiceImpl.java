@@ -11,6 +11,8 @@ import edu.usm.dto.GrantDto;
 import edu.usm.repository.FoundationDao;
 import edu.usm.service.BasicService;
 import edu.usm.service.FoundationService;
+import edu.usm.service.GrantService;
+import edu.usm.service.InteractionRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,12 @@ public class FoundationServiceImpl extends BasicService implements FoundationSer
 
     @Autowired
     private FoundationDao foundationDao;
+
+    @Autowired
+    private GrantService grantService;
+
+    @Autowired
+    private InteractionRecordService interactionService;
 
     @Override
     public Foundation findById(String id) {
@@ -108,18 +116,18 @@ public class FoundationServiceImpl extends BasicService implements FoundationSer
 
     @Override
     public void createInteractionRecord(Foundation foundation, InteractionRecord interactionRecord) throws ConstraintViolation {
-        updateLastModified(interactionRecord);
+        updateLastModified(foundation);
         interactionRecord.setFoundation(foundation);
         foundation.addInteractionRecord(interactionRecord);
-        update(foundation);
+        interactionService.create(interactionRecord);
     }
 
     @Override
     public void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
-        updateLastModified(grant);
+        updateLastModified(foundation);
         foundation.addGrant(grant);
         grant.setFoundation(foundation);
-        update(foundation);
+        grantService.create(grant);
     }
 
     @Override

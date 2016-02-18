@@ -83,6 +83,9 @@ public class GrantServiceImpl extends BasicService implements GrantService {
         if (null == grant.getName()) {
             throw new ConstraintViolation(ConstraintMessage.GRANT_REQUIRED_NAME);
         }
+        if (null == grant.getFoundation()) {
+            throw new ConstraintViolation(ConstraintMessage.GRANT_NO_FOUNDATION);
+        }
         throw new ConstraintViolation();
     }
 
