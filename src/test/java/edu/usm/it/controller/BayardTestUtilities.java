@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,14 +44,14 @@ public final class BayardTestUtilities {
                 .andExpect(status().isOk());
     }
 
-    public static void performEntityPost(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
+    public static void performEntityPost(String url, Serializable entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(entity)))
                 .andExpect(status().isCreated());
     }
 
-    public static void performEntityPut(String url, BasicEntity entity, MockMvc mockMvc) throws Exception {
+    public static void performEntityPut(String url, Serializable entity, MockMvc mockMvc) throws Exception {
         mockMvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(entity)))
