@@ -102,7 +102,7 @@ public class GrantServiceTest extends WebAppConfigurationAware {
         assertNull(grant);
 
         foundation = foundationService.findById(foundation.getId());
-        assertFalse(foundation.getGrants().contains(grant));
+        assertTrue(foundation.getGrants().isEmpty());
 
         userFileUpload = fileDao.findOne(userFileUpload.getId());
         assertNull(userFileUpload);

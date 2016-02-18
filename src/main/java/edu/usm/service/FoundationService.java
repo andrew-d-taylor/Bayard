@@ -2,6 +2,7 @@ package edu.usm.service;
 
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
 import edu.usm.dto.GrantDto;
@@ -22,6 +23,9 @@ public interface FoundationService {
 
     @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     Set<Foundation> findAll();
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void createInteractionRecord(Foundation foundation, InteractionRecord interactionRecord) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     String create(Foundation foundation) throws ConstraintViolation;

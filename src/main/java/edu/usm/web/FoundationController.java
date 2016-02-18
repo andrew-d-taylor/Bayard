@@ -3,6 +3,7 @@ package edu.usm.web;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.Views;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.InvalidApiRequestException;
@@ -42,11 +43,7 @@ public class FoundationController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response updateFoundationDetails(@PathVariable("id")String id, @RequestBody FoundationDto foundationDto) throws NullDomainReference, ConstraintViolation{
-        Foundation fromDb = foundationService.findById(id);
-        if (null == fromDb) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);
-        }
+        Foundation fromDb = retrieveFoundationReference(id);
         foundationService.update(fromDb, foundationDto);
         return Response.successGeneric();
     }
@@ -62,22 +59,14 @@ public class FoundationController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView({Views.FoundationDetails.class})
     public Foundation getFoundation(@PathVariable("id") String id)  throws NullDomainReference{
-        Foundation foundation = foundationService.findById(id);
-        if (null == foundation) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);
-        }
+        Foundation foundation = retrieveFoundationReference(id);
         return foundation;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response deleteFoundation(@PathVariable("id") String id) throws NullDomainReference{
-        Foundation foundation = foundationService.findById(id);
-        if (null == foundation) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);
-        }
+        Foundation foundation = retrieveFoundationReference(id);
         foundationService.delete(foundation);
         return Response.successGeneric();
     }
@@ -85,11 +74,7 @@ public class FoundationController {
     @RequestMapping(value = "/{id}/grants", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Response createGrant(@PathVariable("id")String id, @RequestBody GrantDto grant) throws NullDomainReference, ConstraintViolation {
-        Foundation foundation = foundationService.findById(id);
-        if (null == foundation) {
-            //TODO: replace with our new approach to handling 404s
-            throw new NullDomainReference.NullFoundation(id);
-        }
+        Foundation foundation = retrieveFoundationReference(id);
         foundationService.createGrant(foundation, grant);
         return Response.successGeneric();
     }
@@ -98,12 +83,25 @@ public class FoundationController {
     @ResponseStatus(HttpStatus.OK)
     @JsonView(Views.GrantList.class)
     public Set<Grant> getFoundationGrants(@PathVariable("id")String id) throws NullDomainReference{
+        Foundation foundation = retrieveFoundationReference(id);
+        return foundation.getGrants();
+    }
+
+    @RequestMapping(value = "/{id}/interactions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response createInteractionRecord(@PathVariable("id")String id, @RequestBody InteractionRecord interaction) throws ConstraintViolation, NullDomainReference {
+        Foundation foundation = retrieveFoundationReference(id);
+        foundationService.createInteractionRecord(foundation, interaction);
+        return Response.successGeneric();
+    }
+
+    private Foundation retrieveFoundationReference(String id) throws NullDomainReference {
         Foundation foundation = foundationService.findById(id);
         if (null == foundation) {
             //TODO: replace with our new approach to handling 404s
             throw new NullDomainReference.NullFoundation(id);
         }
-        return foundation.getGrants();
+        return foundation;
     }
 
 }

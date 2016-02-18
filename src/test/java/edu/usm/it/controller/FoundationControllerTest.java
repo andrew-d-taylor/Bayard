@@ -3,6 +3,7 @@ package edu.usm.it.controller;
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
 import edu.usm.domain.Grant;
+import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.Views;
 
 import edu.usm.service.FoundationService;
@@ -148,6 +149,25 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         assertEquals(2, foundation.getGrants().size());
         String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/grants";
         BayardTestUtilities.performEntityGetMultiple(Views.GrantList.class, url, mockMvc, grantOne, grantTwo);
+
+    }
+
+    @Test
+    public void testCreateInteractionRecord() throws Exception {
+        foundationService.create(foundation);
+        InteractionRecord record = new InteractionRecord("Point person", LocalDate.now(), "Call");
+        record.setNotes("Some notes");
+        record.setRequiresFollowUp(false);
+        String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/interactions";
+        BayardTestUtilities.performEntityPost(url, record, mockMvc);
+
+        foundation = foundationService.findById(foundation.getId());
+        InteractionRecord fromDb = foundation.getInteractionRecords().iterator().next();
+        assertEquals(record.getInteractionType(), fromDb.getInteractionType());
+        assertEquals(record.getPersonContacted(), fromDb.getPersonContacted());
+        assertEquals(record.getDateOfInteraction(), fromDb.getDateOfInteraction());
+        assertEquals(record.getNotes(), fromDb.getNotes());
+        assertEquals(record.isRequiresFollowUp(), fromDb.isRequiresFollowUp());
 
     }
 
