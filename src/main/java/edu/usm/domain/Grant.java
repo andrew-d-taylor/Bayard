@@ -1,5 +1,6 @@
 package edu.usm.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
@@ -23,10 +24,12 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
 
     @Column
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDate startPeriod;
 
     @Column
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDate endPeriod;
 
     @Column
@@ -39,14 +42,17 @@ public class Grant extends BasicEntity implements MonetaryContribution, Serializ
 
     @Column
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDate intentDeadline;
 
     @Column
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDate applicationDeadline;
 
     @Column
     @JsonView({Views.GrantDetails.class, Views.GrantList.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDate reportDeadline;
 
     @Column
