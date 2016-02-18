@@ -1,6 +1,7 @@
 package edu.usm.service;
 
 import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,4 +37,6 @@ public interface FoundationService {
     @PreAuthorize(value = "hasAnyRole('ROLE_SUPERUSER')")
     void deleteAll();
 
+    @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
 }

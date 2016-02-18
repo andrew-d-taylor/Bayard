@@ -108,4 +108,17 @@ public class FoundationServiceTest extends WebAppConfigurationAware{
         assertTrue(shouldAlsoBeEmpty.isEmpty());
     }
 
+    @Test
+    public void testCreateGrant() throws ConstraintViolation {
+        foundation.getGrants().remove(grant);
+        foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+        assertTrue(foundation.getGrants().isEmpty());
+
+        foundationService.createGrant(foundation, grant);
+        foundation = foundationService.findById(foundation.getId());
+
+        assertEquals(grant.getName(), foundation.getGrants().iterator().next().getName());
+    }
+
 }

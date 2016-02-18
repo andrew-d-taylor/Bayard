@@ -2,12 +2,16 @@ package edu.usm.it.controller;
 
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.Views;
 import edu.usm.service.FoundationService;
+import edu.usm.service.GrantService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,6 +24,9 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
 
     @Autowired
     FoundationService foundationService;
+
+    @Autowired
+    GrantService grantService;
 
     final String FOUNDATIONS_BASE_URL = "/foundations/";
 
@@ -105,6 +112,29 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
 
         foundation = foundationService.findById(foundation.getId());
         assertNull(foundation);
+    }
+
+    @Test
+    public void testCreateGrant() throws Exception {
+        foundationService.create(foundation);
+        Grant grant = new Grant();
+        grant.setName("Test Grant");
+        grant.setApplicationDeadline(LocalDate.of(2016, 6, 6));
+        grant.setIntentDeadline(LocalDate.now());
+        grant.setReportDeadline(LocalDate.of(2017, 6, 6));
+        grant.setAmountReceived(100);
+
+        BayardTestUtilities.performEntityPost(FOUNDATIONS_BASE_URL+foundation.getId()+"/grants", grant, mockMvc);
+
+        foundation = foundationService.findById(foundation.getId());
+        assertEquals(1, foundation.getGrants().size());
+
+        Grant fromDb = grantService.findById(foundation.getGrants().iterator().next().getId());
+        assertEquals(grant.getName(), fromDb.getName());
+        assertEquals(grant.getApplicationDeadline(), fromDb.getApplicationDeadline());
+        assertEquals(grant.getIntentDeadline(), fromDb.getIntentDeadline());
+        assertEquals(grant.getReportDeadline(), fromDb.getReportDeadline());
+        assertEquals(grant.getAmountReceived(), fromDb.getAmountReceived());
     }
 
 }

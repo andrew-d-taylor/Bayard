@@ -1,6 +1,7 @@
 package edu.usm.service.impl;
 
 import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.dto.FoundationDto;
@@ -96,5 +97,12 @@ public class FoundationServiceImpl implements FoundationService {
     public void deleteAll() {
         Set<Foundation> foundations = findAll();
         foundations.stream().forEach(this::delete);
+    }
+
+    @Override
+    public void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
+        foundation.addGrant(grant);
+        grant.setFoundation(foundation);
+        update(foundation);
     }
 }
