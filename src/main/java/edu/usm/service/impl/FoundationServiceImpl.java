@@ -105,4 +105,10 @@ public class FoundationServiceImpl implements FoundationService {
         grant.setFoundation(foundation);
         update(foundation);
     }
+
+    @Override
+    public void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation {
+        foundation.getGrants().remove(grant);
+        update(foundation);
+    }
 }

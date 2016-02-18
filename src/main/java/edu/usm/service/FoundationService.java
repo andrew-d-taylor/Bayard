@@ -39,4 +39,9 @@ public interface FoundationService {
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void createGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void deleteGrant(Foundation foundation, Grant grant) throws ConstraintViolation;
+
+
 }

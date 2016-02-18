@@ -9,6 +9,7 @@ import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.FoundationDto;
 import edu.usm.dto.Response;
 import edu.usm.service.FoundationService;
+import edu.usm.service.GrantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +26,9 @@ public class FoundationController {
 
     @Autowired
     private FoundationService foundationService;
+
+    @Autowired
+    private GrantService grantService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -87,4 +91,21 @@ public class FoundationController {
         foundationService.createGrant(foundation, grant);
         return Response.successGeneric();
     }
+
+    @RequestMapping(value = "/{id}/grants/{grantId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Response deleteGrant(@PathVariable("id")String id, @PathVariable("grantId")String grantId) throws NullDomainReference, ConstraintViolation {
+        Foundation foundation = foundationService.findById(id);
+        Grant grant = grantService.findById(grantId);
+        if (null == foundation) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullFoundation(id);        }
+        if (null == grant) {
+            //TODO: replace with our new approach to handling 404s
+            throw new NullDomainReference.NullGrant(grantId);
+        }
+        foundationService.deleteGrant(foundation, grant);
+        return Response.successGeneric();
+    }
+
 }

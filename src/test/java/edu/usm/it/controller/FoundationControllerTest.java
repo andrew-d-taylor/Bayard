@@ -12,10 +12,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by andrew on 2/12/16.
@@ -135,6 +134,28 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
         assertEquals(grant.getIntentDeadline(), fromDb.getIntentDeadline());
         assertEquals(grant.getReportDeadline(), fromDb.getReportDeadline());
         assertEquals(grant.getAmountReceived(), fromDb.getAmountReceived());
+    }
+
+    @Test
+    public void testDeleteGrant() throws Exception {
+        foundationService.create(foundation);
+        foundation = foundationService.findById(foundation.getId());
+
+        Grant grant = new Grant("Test Grant", foundation);
+        foundationService.createGrant(foundation, grant);
+
+        foundation = foundationService.findById(foundation.getId());
+        grant = foundation.getGrants().iterator().next();
+        String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/grants/"+grant.getId();
+
+        BayardTestUtilities.performEntityDelete(url, mockMvc);
+
+        foundation = foundationService.findById(foundation.getId());
+        assertTrue(foundation.getGrants().isEmpty());
+
+        Set<Grant> shouldBeEmpty = grantService.findAll();
+        assertTrue(shouldBeEmpty.isEmpty());
+
     }
 
 }
