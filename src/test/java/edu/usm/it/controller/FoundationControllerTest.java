@@ -155,7 +155,7 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
     @Test
     public void testCreateInteractionRecord() throws Exception {
         foundationService.create(foundation);
-        InteractionRecord record = new InteractionRecord("Point person", LocalDate.now(), "Call");
+        InteractionRecord record = new InteractionRecord("Point person", LocalDate.now(), "Call", foundation);
         record.setNotes("Some notes");
         record.setRequiresFollowUp(false);
         String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/interactions";
