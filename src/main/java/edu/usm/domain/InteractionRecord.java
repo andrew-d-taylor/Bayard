@@ -131,4 +131,18 @@ public class InteractionRecord extends BasicEntity implements Serializable {
     public void setFileUploads(Set<UserFileUpload> fileUploads) {
         this.fileUploads = fileUploads;
     }
+
+    @Override
+    public int hashCode() {
+        //TODO: only necessary as a workaround to the problematic hashCode of BasicEntity
+        if (getId() != null) {
+            return (getId() + getCreated()).hashCode();
+        } else {
+            if (getPersonContacted() != null && getDateOfInteraction() != null) {
+                return (getPersonContacted() + getDateOfInteraction().toString() + getCreated()).hashCode();
+            }
+            return getCreated().hashCode();
+        }
+    }
+
 }
