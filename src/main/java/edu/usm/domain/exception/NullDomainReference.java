@@ -147,6 +147,14 @@ public abstract class NullDomainReference extends Exception {
 
     }
 
+    public static class NullInteractionRecord extends NullDomainReference {
+
+        public NullInteractionRecord(String id) {
+            super(messageConstructor(NullInteractionRecord.class.getSimpleName(),id));
+        }
+
+    }
+
     protected static String messageConstructor(String domainClass, String id) {
         return domainClass+" with id : "+id+" does not exist";
     }

@@ -30,4 +30,8 @@ public interface Views {
     interface GrantList extends Views{}
     interface GrantDetails extends Views{}
 
+    interface InteractionRecordDetails extends Views{}
+    interface InteractionRecordList extends Views{}
+
+
 }

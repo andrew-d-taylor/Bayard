@@ -1,5 +1,7 @@
 package edu.usm.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,29 +17,36 @@ public class InteractionRecord extends BasicEntity implements Serializable {
 
     @Column
     @NotNull
+    @JsonView({Views.InteractionRecordDetails.class, Views.InteractionRecordList.class, Views.FoundationDetails.class})
     private String personContacted;
 
     @Column
     @NotNull
+    @JsonView({Views.InteractionRecordDetails.class, Views.InteractionRecordList.class, Views.FoundationDetails.class})
     private LocalDate dateOfInteraction;
 
     @Column
     @NotNull
+    @JsonView({Views.InteractionRecordDetails.class, Views.InteractionRecordList.class})
     private String interactionType;
 
     @Lob
     @Column
+    @JsonView({Views.InteractionRecordDetails.class})
     private String notes;
 
     @Column
+    @JsonView({Views.InteractionRecordDetails.class, Views.InteractionRecordList.class})
     private boolean requiresFollowUp;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @NotNull
+    @JsonView({Views.InteractionRecordDetails.class, Views.InteractionRecordList.class})
     private Foundation foundation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "interaction_record_id")
+    @JsonView({Views.InteractionRecordDetails.class})
     private Set<UserFileUpload> fileUploads = new HashSet<>();
 
     public InteractionRecord() {

@@ -37,7 +37,9 @@ public abstract class BasicEntity {
             Views.FoundationDetails.class,
             Views.FoundationList.class,
             Views.GrantList.class,
-            Views.GrantDetails.class})
+            Views.GrantDetails.class,
+            Views.InteractionRecordList.class,
+            Views.InteractionRecordDetails.class})
     private String id;
 
     @Column

@@ -5,6 +5,8 @@ import edu.usm.domain.Grant;
 import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.DtoTransformer;
+import edu.usm.dto.InteractionRecordDto;
 import edu.usm.repository.InteractionRecordDao;
 import edu.usm.service.BasicService;
 import edu.usm.service.FoundationService;
@@ -57,6 +59,12 @@ public class InteractionRecordServiceImpl extends BasicService implements Intera
         } catch (DataAccessException | TransactionSystemException e) {
             handlePersistenceException(record);
         }
+    }
+
+    @Override
+    public void update(InteractionRecord record, InteractionRecordDto details) throws ConstraintViolation {
+        DtoTransformer.fromDto(details, record);
+        update(record);
     }
 
     private void handlePersistenceException(InteractionRecord record) throws ConstraintViolation {

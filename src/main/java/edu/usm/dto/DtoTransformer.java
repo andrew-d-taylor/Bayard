@@ -1,6 +1,7 @@
 package edu.usm.dto;
 
 import edu.usm.domain.Grant;
+import edu.usm.domain.InteractionRecord;
 
 /**
  * Created by andrew on 2/18/16.
@@ -34,6 +35,28 @@ public class DtoTransformer {
         dto.setRestriction(grant.getRestriction());
         if (null != grant.getFoundation()) {
             dto.setFoundationId(grant.getFoundation().getId());
+        }
+        return dto;
+    }
+
+    public static void fromDto(InteractionRecordDto dto, InteractionRecord record) {
+        record.setPersonContacted(dto.getPersonContacted());
+        record.setDateOfInteraction(dto.getDateOfInteraction());
+        record.setInteractionType(dto.getInteractionType());
+        record.setNotes(dto.getNotes());
+        record.setRequiresFollowUp(dto.isRequiresFollowUp());
+    }
+
+    public static InteractionRecordDto fromEntity(InteractionRecord record) {
+        InteractionRecordDto dto = new InteractionRecordDto();
+        dto.setPersonContacted(record.getPersonContacted());
+        dto.setDateOfInteraction(record.getDateOfInteraction());
+        dto.setInteractionType(record.getInteractionType());
+        dto.setNotes(record.getNotes());
+        dto.setRequiresFollowUp(record.isRequiresFollowUp());
+
+        if (null != record.getFoundation()) {
+            dto.setFoundationId(record.getFoundation().getId());
         }
         return dto;
     }

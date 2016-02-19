@@ -22,7 +22,9 @@ public class Foundation extends BasicEntity implements Serializable{
     @JsonView({Views.FoundationDetails.class,
             Views.FoundationList.class,
             Views.GrantDetails.class,
-            Views.GrantList.class})
+            Views.GrantList.class,
+            Views.InteractionRecordList.class,
+            Views.InteractionRecordDetails.class})
     private String name;
 
     @Column

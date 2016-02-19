@@ -3,10 +3,7 @@ package edu.usm.it.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import edu.usm.domain.BasicEntity;
-import edu.usm.domain.Foundation;
-import edu.usm.domain.Grant;
-import edu.usm.domain.Views;
+import edu.usm.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,6 +32,8 @@ public final class BayardTestUtilities {
     public static List<Field> foundationListFields;
     public static List<Field> grantDetailsFields;
     public static List<Field> grantListFields;
+    public static List<Field> interactionRecordDetailsFields;
+    public static List<Field> interactionRecordListFields;
 
     private static ObjectMapper objectMapper;
 
@@ -196,6 +195,18 @@ public final class BayardTestUtilities {
             grantDetailsFields.add(Grant.class.getDeclaredField("description"));
             grantDetailsFields.add(Grant.class.getDeclaredField("restriction"));
             jsonViewEntityFields.put(Views.GrantDetails.class.getSimpleName(), grantDetailsFields);
+
+            interactionRecordListFields = new ArrayList<>();
+            interactionRecordListFields.add(InteractionRecord.class.getDeclaredField("personContacted"));
+            interactionRecordListFields.add(InteractionRecord.class.getDeclaredField("dateOfInteraction"));
+            interactionRecordListFields.add(InteractionRecord.class.getDeclaredField("interactionType"));
+            interactionRecordListFields.add(InteractionRecord.class.getDeclaredField("requiresFollowUp"));
+            jsonViewEntityFields.put(Views.InteractionRecordList.class.getSimpleName(), interactionRecordListFields);
+
+            interactionRecordDetailsFields = new ArrayList<>(interactionRecordListFields);
+            interactionRecordDetailsFields.add(InteractionRecord.class.getDeclaredField("notes"));
+            jsonViewEntityFields.put(Views.InteractionRecordDetails.class.getSimpleName(), interactionRecordDetailsFields);
+
 
         } catch (NoSuchFieldException e) {
 

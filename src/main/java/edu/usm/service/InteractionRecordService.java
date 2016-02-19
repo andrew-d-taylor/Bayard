@@ -2,6 +2,7 @@ package edu.usm.service;
 
 import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.InteractionRecordDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -22,6 +23,9 @@ public interface InteractionRecordService {
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void update(InteractionRecord record) throws ConstraintViolation;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void update(InteractionRecord record, InteractionRecordDto details) throws ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_ELEVATED','ROLE_SUPERUSER')")
     void delete(InteractionRecord record) throws ConstraintViolation;

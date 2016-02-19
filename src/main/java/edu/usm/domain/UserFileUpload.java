@@ -15,20 +15,20 @@ public class UserFileUpload extends BasicEntity {
 
     @Column
     @NotNull
-    @JsonView({Views.GrantDetails.class})
+    @JsonView({Views.GrantDetails.class, Views.InteractionRecordDetails.class})
     private String fileName;
 
     @Column
-    @JsonView({Views.GrantDetails.class})
+    @JsonView({Views.GrantDetails.class, Views.InteractionRecordDetails.class})
     private String fileType;
 
     @Column
-    @JsonView({Views.GrantDetails.class})
+    @JsonView({Views.GrantDetails.class, Views.InteractionRecordDetails.class})
     private String description;
 
     @Lob
     @Column
-    @JsonView({Views.GrantDetails.class})
+    @JsonView({Views.GrantDetails.class, Views.InteractionRecordDetails.class})
     private byte[] fileContent;
 
     public UserFileUpload() {

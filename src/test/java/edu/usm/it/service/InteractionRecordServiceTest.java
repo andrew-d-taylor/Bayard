@@ -5,6 +5,7 @@ import edu.usm.domain.Foundation;
 import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.UserFileUpload;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.repository.UserFileUploadDao;
 import edu.usm.service.FoundationService;
 import edu.usm.service.InteractionRecordService;
 import org.junit.After;
@@ -28,6 +29,9 @@ public class InteractionRecordServiceTest extends WebAppConfigurationAware {
 
     @Autowired
     FoundationService foundationService;
+
+    @Autowired
+    UserFileUploadDao dao;
 
     InteractionRecord record;
     Foundation f;
@@ -76,6 +80,7 @@ public class InteractionRecordServiceTest extends WebAppConfigurationAware {
         recordService.delete(record);
         record = recordService.findById(record.getId());
         assertNull(record);
+        assertNull(dao.findOne(userFileUpload.getId()));
     }
 
     @Test
