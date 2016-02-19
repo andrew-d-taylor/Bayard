@@ -1,10 +1,13 @@
 package edu.usm.service.impl;
 
+import edu.usm.domain.Foundation;
+import edu.usm.domain.Grant;
 import edu.usm.domain.InteractionRecord;
 import edu.usm.domain.exception.ConstraintMessage;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.repository.InteractionRecordDao;
 import edu.usm.service.BasicService;
+import edu.usm.service.FoundationService;
 import edu.usm.service.InteractionRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -21,6 +24,9 @@ public class InteractionRecordServiceImpl extends BasicService implements Intera
 
     @Autowired
     private InteractionRecordDao dao;
+
+    @Autowired
+    private FoundationService foundationService;
 
     @Override
     public Set<InteractionRecord> findAll() {
@@ -67,13 +73,24 @@ public class InteractionRecordServiceImpl extends BasicService implements Intera
     }
 
     @Override
-    public void delete(InteractionRecord record) {
+    public void delete(InteractionRecord record) throws ConstraintViolation{
         updateLastModified(record);
-        dao.delete(record);
+        Foundation f = record.getFoundation();
+        updateLastModified(f);
+        f.getInteractionRecords().remove(record);
+        foundationService.update(f);
+    }
+
+    private void uncheckedDelete(InteractionRecord record) {
+        try {
+            delete(record);
+        } catch (ConstraintViolation e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void deleteAll() {
-        findAll().stream().forEach(this::delete);
+        findAll().stream().forEach(this::uncheckedDelete);
     }
 }
