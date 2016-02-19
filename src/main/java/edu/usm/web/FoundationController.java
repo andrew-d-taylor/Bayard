@@ -95,6 +95,16 @@ public class FoundationController {
         return Response.successGeneric();
     }
 
+
+    @RequestMapping(value = "/{id}/interactions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @JsonView(Views.InteractionRecordList.class)
+    public Set<InteractionRecord> getInteractionRecords(@PathVariable("id")String id) throws NullDomainReference {
+        Foundation f = retrieveFoundationReference(id);
+        return f.getInteractionRecords();
+    }
+
+
     private Foundation retrieveFoundationReference(String id) throws NullDomainReference {
         Foundation foundation = foundationService.findById(id);
         if (null == foundation) {

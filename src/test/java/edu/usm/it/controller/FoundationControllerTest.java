@@ -171,4 +171,20 @@ public class FoundationControllerTest extends WebAppConfigurationAware {
 
     }
 
+    @Test
+    public void testGetInteractionRecords() throws Exception {
+        InteractionRecord record = new InteractionRecord("Point person", LocalDate.now(), "Call", foundation);
+        record.setNotes("Some notes");
+        record.setRequiresFollowUp(true);
+        InteractionRecord anotherRecord = new InteractionRecord("Head of Foundation", LocalDate.of(2016, 1, 1), "Email", foundation);
+        record.setNotes("A follow up to the first interaction");
+        record.setRequiresFollowUp(false);
+        foundation.addInteractionRecord(record);
+        foundation.addInteractionRecord(anotherRecord);
+        foundationService.create(foundation);
+
+        String url = FOUNDATIONS_BASE_URL+foundation.getId()+"/interactions";
+        BayardTestUtilities.performEntityGetMultiple(Views.InteractionRecordList.class, url, mockMvc, record, anotherRecord);
+    }
+
 }
