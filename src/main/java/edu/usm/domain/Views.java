@@ -33,5 +33,7 @@ public interface Views {
     interface InteractionRecordDetails extends Views{}
     interface InteractionRecordList extends Views{}
 
+    interface DonationDetails extends Views{}
+
 
 }

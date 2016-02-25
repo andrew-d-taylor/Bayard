@@ -34,6 +34,7 @@ public final class BayardTestUtilities {
     public static List<Field> grantListFields;
     public static List<Field> interactionRecordDetailsFields;
     public static List<Field> interactionRecordListFields;
+    public static List<Field> donationDetailsFields;
 
     private static ObjectMapper objectMapper;
 
@@ -206,6 +207,17 @@ public final class BayardTestUtilities {
             interactionRecordDetailsFields = new ArrayList<>(interactionRecordListFields);
             interactionRecordDetailsFields.add(InteractionRecord.class.getDeclaredField("notes"));
             jsonViewEntityFields.put(Views.InteractionRecordDetails.class.getSimpleName(), interactionRecordDetailsFields);
+
+            donationDetailsFields = new ArrayList<>();
+            donationDetailsFields.add(Donation.class.getDeclaredField("amount"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("method"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("dateOfReceipt"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("dateOfDeposit"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("anonymous"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("standalone"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("budgetItem"));
+            donationDetailsFields.add(Donation.class.getDeclaredField("restrictedToCategory"));
+            jsonViewEntityFields.put(Views.DonationDetails.class.getSimpleName(), donationDetailsFields);
 
 
         } catch (NoSuchFieldException e) {

@@ -42,6 +42,20 @@ public class DonationServiceImpl extends BasicService implements DonationService
     }
 
     @Override
+    public void update(Donation existing, Donation update) {
+        existing.setAmount(update.getAmount());
+        existing.setStandalone(update.isStandalone());
+        existing.setAnonymous(update.isAnonymous());
+        existing.setRestrictedToCategory(update.getRestrictedToCategory());
+        existing.setMethod(update.getMethod());
+        existing.setBudgetItem(update.getBudgetItem());
+        existing.setDateOfDeposit(update.getDateOfDeposit());
+        existing.setDateOfReceipt(update.getDateOfReceipt());
+
+        update(existing);
+    }
+
+    @Override
     public void delete(Donation donation) {
         donationDao.delete(donation);
     }
