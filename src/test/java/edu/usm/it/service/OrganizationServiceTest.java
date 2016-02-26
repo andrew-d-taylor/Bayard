@@ -142,7 +142,6 @@ public class OrganizationServiceTest extends WebAppConfigurationAware {
     @Test
     public void testAddDonation() throws Exception{
         organizationService.create(organization);
-        organization.addDonation(donation);
         organizationService.addDonation(organization, donation);
 
         organization = organizationService.findById(organization.getId());
