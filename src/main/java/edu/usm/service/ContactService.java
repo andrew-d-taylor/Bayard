@@ -87,4 +87,11 @@ public interface ContactService {
     @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     void addToGroup(Contact contact, Group group);
 
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void addDonation(Contact contact, Donation donation) throws  NullDomainReference.NullContact;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void removeDonation(Contact contact, Donation donation) throws  NullDomainReference.NullContact;
+
+
 }

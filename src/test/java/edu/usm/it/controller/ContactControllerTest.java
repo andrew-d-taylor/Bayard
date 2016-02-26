@@ -60,11 +60,15 @@ public class ContactControllerTest extends WebAppConfigurationAware {
     @Autowired
     GroupService groupService;
 
+    @Autowired
+    DonationService donationService;
+
 
     private Contact contact;
     private Event event;
     private EncounterType encounterType;
     private Group group;
+    private Donation donation;
 
     @Before
     public void setup() throws ConstraintViolation{
@@ -102,6 +106,11 @@ public class ContactControllerTest extends WebAppConfigurationAware {
 
         group = new Group();
         group.setGroupName("Test Group");
+
+        donation = new Donation();
+        donation.setAmount(200);
+        donation.setDateOfDeposit(LocalDate.now());
+        donation.setDateOfDeposit(LocalDate.of(2015, 1, 1));
     }
 
     @After
@@ -113,6 +122,7 @@ public class ContactControllerTest extends WebAppConfigurationAware {
         contactService.deleteAll();
         eventService.deleteAll();
         encounterTypeService.deleteAll();
+        donationService.deleteAll();
     }
 
     @Test
@@ -482,7 +492,7 @@ public class ContactControllerTest extends WebAppConfigurationAware {
 
         String committeeID = committeeService.create(committee);
 
-        mockMvc.perform(delete("/contacts/" + id + "/committees/"+committeeID)
+        mockMvc.perform(delete("/contacts/" + id + "/committees/" + committeeID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -665,7 +675,32 @@ public class ContactControllerTest extends WebAppConfigurationAware {
         contact = contactService.findById(contact.getId());
         assertTrue(contact.getAttendedEvents().contains(event));
 
+    }
 
+    @Test
+    public void testAddDonation() throws Exception {
+        contactService.create(contact);
+        BayardTestUtilities.performEntityPost("/contacts/" + contact.getId() + "/donations", donation, mockMvc);
+
+        contact = contactService.findById(contact.getId());
+        assertFalse(contact.getDonorInfo().getDonations().isEmpty());
+    }
+
+    @Test
+    public void testRemoveDonation() throws Exception {
+        contactService.create(contact);
+        contactService.addDonation(contact, donation);
+        contact = contactService.findById(contact.getId());
+        donation = contact.getDonorInfo().getDonations().iterator().next();
+        assertNotNull(donation);
+
+        String url = "/contacts/" + contact.getId() + "/donations/"+donation.getId();
+        BayardTestUtilities.performEntityDelete(url, mockMvc);
+
+        contact = contactService.findById(contact.getId());
+        assertTrue(contact.getDonorInfo().getDonations().isEmpty());
+        donation = donationService.findById(donation.getId());
+        assertNotNull(donation);
     }
 
 

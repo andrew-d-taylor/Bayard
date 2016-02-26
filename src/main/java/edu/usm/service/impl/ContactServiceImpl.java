@@ -255,6 +255,23 @@ public class ContactServiceImpl extends BasicService implements ContactService {
     }
 
     @Override
+    public void addDonation(Contact contact, Donation donation) throws NullDomainReference.NullContact {
+        if (null == contact.getDonorInfo()) {
+            contact.setDonorInfo(new DonorInfo());
+        }
+        contact.getDonorInfo().addDonation(donation);
+        update(contact);
+    }
+
+    @Override
+    public void removeDonation(Contact contact, Donation donation) throws NullDomainReference.NullContact {
+        if (null != contact.getDonorInfo() && null != contact.getDonorInfo().getDonations()) {
+            contact.getDonorInfo().getDonations().remove(donation);
+            update(contact);
+        }
+    }
+
+    @Override
     public void addContactToOrganization(Contact contact, Organization organization) throws NullDomainReference.NullOrganization, NullDomainReference.NullContact{
 
         if (null == contact) {

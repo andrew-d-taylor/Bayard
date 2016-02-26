@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -46,6 +47,9 @@ public class ContactController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private DonationService donationService;
 
     private Logger logger = LoggerFactory.getLogger(ContactController.class);
 
@@ -376,6 +380,34 @@ public class ContactController {
         contactService.removeFromGroup(contact, group);
         return Response.successGeneric();
 
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/{id}/donations", method = RequestMethod.POST, consumes={"application/json"}, produces = {"application/json"})
+    public Response addDonation(@PathVariable("id")String id, @RequestBody Donation donation) throws NullDomainReference, ConstraintViolation {
+        Contact c = contactService.findById(id);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        contactService.addDonation(c, donation);
+        return Response.successGeneric();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/donations/{donationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response removeDonation(@PathVariable("id")String id, @PathVariable("donationId")String donationId) throws NullDomainReference, ConstraintViolation {
+        Contact c = contactService.findById(id);
+        Donation d = donationService.findById(donationId);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        if (null == d || null == c.getDonorInfo() || !c.getDonorInfo().getDonations().contains(d)) {
+            //TODO 404 refactor
+        }
+        contactService.removeDonation(c, d);
+        return Response.successGeneric();
     }
 }
 

@@ -1,15 +1,13 @@
 package edu.usm.it.service;
 
 import edu.usm.config.WebAppConfigurationAware;
-import edu.usm.domain.Committee;
-import edu.usm.domain.Contact;
-import edu.usm.domain.EncounterType;
-import edu.usm.domain.Organization;
+import edu.usm.domain.*;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.EncounterDto;
 import edu.usm.service.CommitteeService;
 import edu.usm.service.ContactService;
+import edu.usm.service.DonationService;
 import edu.usm.service.OrganizationService;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +15,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,12 +37,14 @@ public class ContactServiceTest extends WebAppConfigurationAware {
     @Autowired
     CommitteeService committeeService;
 
-
+    @Autowired
+    DonationService donationService;
 
     private Contact contact;
     private Contact contact2;
     private Organization organization;
     private Committee committee;
+    private Donation donation;
 
     @Before
     public void setup() {
@@ -69,6 +70,11 @@ public class ContactServiceTest extends WebAppConfigurationAware {
         contact2.setInitiator(true);
         contact2.setPhoneNumber1("890-121-3231");
 
+        donation = new Donation();
+        donation.setAmount(200);
+        donation.setDateOfDeposit(LocalDate.now());
+        donation.setDateOfDeposit(LocalDate.of(2015, 1, 1));
+
         organization = new Organization();
         organization.setName("organization");
         committee = new Committee();
@@ -81,6 +87,7 @@ public class ContactServiceTest extends WebAppConfigurationAware {
         contactService.deleteAll();
         organizationService.deleteAll();
         committeeService.deleteAll();
+        donationService.deleteAll();
     }
 
 
@@ -390,5 +397,31 @@ public class ContactServiceTest extends WebAppConfigurationAware {
         details.setPhoneNumber1(contact.getPhoneNumber1());
 
         contactService.updateBasicDetails(contact2, details);
+    }
+
+    @Test
+    public void testAddDonation() throws Exception {
+        contactService.create(contact);
+        contactService.addDonation(contact, donation);
+
+        contact = contactService.findById(contact.getId());
+        assertNotNull(contact.getDonorInfo());
+        assertFalse(contact.getDonorInfo().getDonations().isEmpty());
+    }
+
+    @Test
+    public void testRemoveDonation() throws Exception {
+        contactService.create(contact);
+        contactService.addDonation(contact, donation);
+        contact = contactService.findById(contact.getId());
+        donation = contact.getDonorInfo().getDonations().iterator().next();
+        assertNotNull(donation);
+
+        contactService.removeDonation(contact, donation);
+        contact = contactService.findById(contact.getId());
+        assertTrue(contact.getDonorInfo().getDonations().isEmpty());
+
+        donation = donationService.findById(donation.getId());
+        assertNotNull(donation);
     }
 }
