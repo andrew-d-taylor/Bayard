@@ -35,5 +35,7 @@ public interface Views {
 
     interface DonationDetails extends Views{}
 
+    interface SustainerPeriodDetails extends Views{}
+
 
 }

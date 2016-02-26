@@ -95,7 +95,13 @@ public interface ContactService {
     void removeDonation(Contact contact, Donation donation) throws  NullDomainReference.NullContact;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    SustainerPeriod findSustainerPeriodById(String id);
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     void createSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod) throws  ConstraintViolation;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void createSustainerPeriod(Contact contact, SustainerPeriodDto dto) throws  ConstraintViolation;
 
     @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     void updateSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod, SustainerPeriodDto newDetails) throws  ConstraintViolation;

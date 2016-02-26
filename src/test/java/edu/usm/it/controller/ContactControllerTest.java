@@ -6,8 +6,10 @@ import edu.usm.config.DateFormatConfig;
 import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.*;
 import edu.usm.domain.exception.ConstraintViolation;
+import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.EncounterDto;
 import edu.usm.dto.IdDto;
+import edu.usm.dto.SustainerPeriodDto;
 import edu.usm.service.*;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +23,7 @@ import org.springframework.http.MediaType;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
@@ -69,6 +72,7 @@ public class ContactControllerTest extends WebAppConfigurationAware {
     private EncounterType encounterType;
     private Group group;
     private Donation donation;
+    private SustainerPeriod sustainerPeriod;
 
     @Before
     public void setup() throws ConstraintViolation{
@@ -111,6 +115,12 @@ public class ContactControllerTest extends WebAppConfigurationAware {
         donation.setAmount(200);
         donation.setDateOfDeposit(LocalDate.now());
         donation.setDateOfDeposit(LocalDate.of(2015, 1, 1));
+
+        sustainerPeriod = new SustainerPeriod();
+        sustainerPeriod.setPeriodStartDate(LocalDate.of(2015, 1, 1));
+        sustainerPeriod.setCancelDate(LocalDate.now());
+        sustainerPeriod.setSentIRSLetter(true);
+        sustainerPeriod.setMonthlyAmount(20);
     }
 
     @After
@@ -701,6 +711,74 @@ public class ContactControllerTest extends WebAppConfigurationAware {
         assertTrue(contact.getDonorInfo().getDonations().isEmpty());
         donation = donationService.findById(donation.getId());
         assertNotNull(donation);
+    }
+
+    @Test
+    public void testGetSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+
+        String url = "/contacts/"+contact.getId()+"/sustainer/"+sustainerPeriod.getId();
+        BayardTestUtilities.performEntityGetSingle(Views.SustainerPeriodDetails.class, url, mockMvc, sustainerPeriod);
+    }
+
+    @Test
+    public void testGetAllSustainerPeriods() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+        SustainerPeriod secondPeriod = new SustainerPeriod();
+        secondPeriod.setMonthlyAmount(1000);
+        secondPeriod.setCancelDate(LocalDate.now());
+        secondPeriod.setPeriodStartDate(LocalDate.of(2014, 2, 2));
+        secondPeriod.setSentIRSLetter(true);
+        contactService.createSustainerPeriod(contact, secondPeriod);
+
+        contact = contactService.findById(contact.getId());
+        Iterator<SustainerPeriod> it = contact.getDonorInfo().getSustainerPeriods().iterator();
+        String url = "/contacts/"+contact.getId()+"/sustainer";
+        BayardTestUtilities.performEntityGetMultiple(Views.SustainerPeriodDetails.class, url, mockMvc, it.next(), it.next());
+    }
+    @Test
+    public void testCreateSustainerPeriod() throws Exception {
+        contactService.create(contact);
+
+        String url = "/contacts/"+contact.getId()+"/sustainer";
+        BayardTestUtilities.performEntityPost(url, DtoTransformer.fromEntity(sustainerPeriod), mockMvc);
+
+        contact = contactService.findById(contact.getId());
+        assertFalse(contact.getDonorInfo().getSustainerPeriods().isEmpty());
+
+    }
+    @Test
+    public void testUpdateSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+for
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+        int newMonthlyAmount = sustainerPeriod.getMonthlyAmount() + 200;
+        sustainerPeriod.setMonthlyAmount(newMonthlyAmount);
+        String url = "/contacts/"+contact.getId()+"/sustainer/"+sustainerPeriod.getId();
+        BayardTestUtilities.performEntityPut(url, DtoTransformer.fromEntity(sustainerPeriod), mockMvc);
+
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+        assertEquals(newMonthlyAmount, sustainerPeriod.getMonthlyAmount());
+    }
+    @Test
+    public void testDeleteSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+
+        String url = "/contacts/"+contact.getId()+"/sustainer/"+sustainerPeriod.getId();
+        BayardTestUtilities.performEntityDelete(url, mockMvc);
+        contact = contactService.findById(contact.getId());
+        assertTrue(contact.getDonorInfo().getSustainerPeriods().isEmpty());
     }
 
 

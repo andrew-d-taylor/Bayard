@@ -35,6 +35,7 @@ public final class BayardTestUtilities {
     public static List<Field> interactionRecordDetailsFields;
     public static List<Field> interactionRecordListFields;
     public static List<Field> donationDetailsFields;
+    public static List<Field> sustainerPeriodDetailsFields;
 
     private static ObjectMapper objectMapper;
 
@@ -219,6 +220,12 @@ public final class BayardTestUtilities {
             donationDetailsFields.add(Donation.class.getDeclaredField("restrictedToCategory"));
             jsonViewEntityFields.put(Views.DonationDetails.class.getSimpleName(), donationDetailsFields);
 
+            sustainerPeriodDetailsFields = new ArrayList<>();
+            sustainerPeriodDetailsFields.add(SustainerPeriod.class.getDeclaredField("monthlyAmount"));
+            sustainerPeriodDetailsFields.add(SustainerPeriod.class.getDeclaredField("periodStartDate"));
+            sustainerPeriodDetailsFields.add(SustainerPeriod.class.getDeclaredField("cancelDate"));
+            sustainerPeriodDetailsFields.add(SustainerPeriod.class.getDeclaredField("sentIRSLetter"));
+            jsonViewEntityFields.put(Views.SustainerPeriodDetails.class.getSimpleName(), sustainerPeriodDetailsFields);
 
         } catch (NoSuchFieldException e) {
 

@@ -8,6 +8,7 @@ import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.EncounterDto;
 import edu.usm.dto.SustainerPeriodDto;
 import edu.usm.repository.ContactDao;
+import edu.usm.repository.SustainerPeriodDao;
 import edu.usm.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ public class ContactServiceImpl extends BasicService implements ContactService {
 
     @Autowired
     private ContactDao contactDao;
+    @Autowired
+    private SustainerPeriodDao sustainerPeriodDao;
     @Autowired
     private OrganizationService organizationService;
     @Autowired
@@ -277,6 +280,11 @@ public class ContactServiceImpl extends BasicService implements ContactService {
     }
 
     @Override
+    public SustainerPeriod findSustainerPeriodById(String id) {
+        return sustainerPeriodDao.findOne(id);
+    }
+
+    @Override
     public void createSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod) throws ConstraintViolation {
         if (null == contact.getDonorInfo()) {
             contact.setDonorInfo(new DonorInfo());
@@ -286,6 +294,13 @@ public class ContactServiceImpl extends BasicService implements ContactService {
         updateLastModified(contact.getDonorInfo());
         updateLastModified(sustainerPeriod);
         update(contact);
+    }
+
+    @Override
+    public void createSustainerPeriod(Contact contact, SustainerPeriodDto dto) throws ConstraintViolation {
+        SustainerPeriod sustainerPeriod = new SustainerPeriod();
+        DtoTransformer.fromDto(dto, sustainerPeriod);
+        createSustainerPeriod(contact, sustainerPeriod);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package edu.usm.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;

@@ -5,9 +5,7 @@ import edu.usm.domain.*;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.InvalidApiRequestException;
 import edu.usm.domain.exception.NullDomainReference;
-import edu.usm.dto.EncounterDto;
-import edu.usm.dto.IdDto;
-import edu.usm.dto.Response;
+import edu.usm.dto.*;
 import edu.usm.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -395,8 +394,8 @@ public class ContactController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/donations/{donationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response removeDonation(@PathVariable("id")String id, @PathVariable("donationId")String donationId) throws NullDomainReference, ConstraintViolation {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/donations/{entityId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response removeDonation(@PathVariable("id")String id, @PathVariable("entityId")String donationId) throws NullDomainReference, ConstraintViolation {
         Contact c = contactService.findById(id);
         Donation d = donationService.findById(donationId);
         if (null == c) {
@@ -409,5 +408,85 @@ public class ContactController {
         contactService.removeDonation(c, d);
         return Response.successGeneric();
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/sustainer/{entityId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(Views.SustainerPeriodDetails.class)
+    public SustainerPeriod getSustainerPeriod(@PathVariable("id")String id, @PathVariable("entityId")String sustainerPeriodId) throws NullDomainReference {
+        Contact c = contactService.findById(id);
+        SustainerPeriod s = contactService.findSustainerPeriodById(sustainerPeriodId);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        if (null == s || !c.getDonorInfo().getSustainerPeriods().contains(s)) {
+            //TODO: 404 refactor
+        }
+        return s;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/sustainer", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(Views.SustainerPeriodDetails.class)
+    public Set<SustainerPeriod> getSustainerPeriodsForContact(@PathVariable("id")String id) throws NullDomainReference {
+        Contact c = contactService.findById(id);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        if (null == c.getDonorInfo()) {
+            return new HashSet<>();
+        }
+        return c.getDonorInfo().getSustainerPeriods();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(method = RequestMethod.POST, value = "/{id}/sustainer", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Response createSustainerPeriod(@PathVariable("id")String id, @RequestBody SustainerPeriodDto dto) throws NullDomainReference, ConstraintViolation {
+        Contact c = contactService.findById(id);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        contactService.createSustainerPeriod(c, dto);
+        return Response.successGeneric();
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/sustainer/{entityId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Response updateSustainerPeriod (@PathVariable("id")String id, @PathVariable("entityId")String sustainerPeriodId, @RequestBody SustainerPeriodDto dto)
+            throws NullDomainReference, ConstraintViolation {
+        Contact c = contactService.findById(id);
+        SustainerPeriod s = contactService.findSustainerPeriodById(sustainerPeriodId);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        if (null == s || !c.getDonorInfo().getSustainerPeriods().contains(s)) {
+            //TODO: 404 refactor
+        }
+        contactService.updateSustainerPeriod(c, s, dto);
+        return Response.successGeneric();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/sustainer/{entityId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response deleteSustainerPeriod(@PathVariable("id")String id, @PathVariable("entityId")String sustainerPeriodId) throws NullDomainReference, ConstraintViolation {
+        Contact c = contactService.findById(id);
+        SustainerPeriod s = contactService.findSustainerPeriodById(sustainerPeriodId);
+        if (null == c) {
+            //TODO: 404 refactor
+            throw new NullDomainReference.NullContact(id);
+        }
+        if (null == s || !c.getDonorInfo().getSustainerPeriods().contains(s)) {
+            //TODO: 404 refactor
+        }
+        contactService.deleteSustainerPeriod(c, s);
+        return Response.successGeneric();
+
+    }
+
+
 }
 
