@@ -2,6 +2,7 @@ package edu.usm.dto;
 
 import edu.usm.domain.Grant;
 import edu.usm.domain.InteractionRecord;
+import edu.usm.domain.SustainerPeriod;
 
 /**
  * Created by andrew on 2/18/16.
@@ -59,6 +60,22 @@ public class DtoTransformer {
             dto.setFoundationId(record.getFoundation().getId());
         }
         return dto;
+    }
+
+    public static SustainerPeriodDto fromEntity(SustainerPeriod sustainerPeriod) {
+        SustainerPeriodDto dto = new SustainerPeriodDto();
+        dto.setMonthlyAmount(sustainerPeriod.getMonthlyAmount());
+        dto.setPeriodStartDate(sustainerPeriod.getPeriodStartDate());
+        dto.setCancelDate(sustainerPeriod.getCancelDate());
+        dto.setSentIRSLetter(sustainerPeriod.isSentIRSLetter());
+        return dto;
+    }
+
+    public static void fromDto(SustainerPeriodDto dto, SustainerPeriod sustainerPeriod) {
+        sustainerPeriod.setMonthlyAmount(dto.getMonthlyAmount());
+        sustainerPeriod.setSentIRSLetter(dto.isSentIRSLetter());
+        sustainerPeriod.setCancelDate(dto.getCancelDate());
+        sustainerPeriod.setPeriodStartDate(dto.getPeriodStartDate());
     }
 
 }

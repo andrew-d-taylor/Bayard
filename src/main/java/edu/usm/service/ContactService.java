@@ -4,6 +4,7 @@ import edu.usm.domain.*;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.NullDomainReference;
 import edu.usm.dto.EncounterDto;
+import edu.usm.dto.SustainerPeriodDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Set;
@@ -93,5 +94,13 @@ public interface ContactService {
     @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     void removeDonation(Contact contact, Donation donation) throws  NullDomainReference.NullContact;
 
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void createSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod) throws  ConstraintViolation;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void updateSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod, SustainerPeriodDto newDetails) throws  ConstraintViolation;
+
+    @PreAuthorize(value = "hasAnyRole('ROLE_USER','ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    void deleteSustainerPeriod(Contact contact, SustainerPeriod sustainerPeriod) throws  ConstraintViolation;
 
 }

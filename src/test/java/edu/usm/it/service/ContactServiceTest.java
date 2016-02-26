@@ -4,7 +4,10 @@ import edu.usm.config.WebAppConfigurationAware;
 import edu.usm.domain.*;
 import edu.usm.domain.exception.ConstraintViolation;
 import edu.usm.domain.exception.NullDomainReference;
+import edu.usm.dto.DtoTransformer;
 import edu.usm.dto.EncounterDto;
+import edu.usm.dto.SustainerPeriodDto;
+import edu.usm.repository.SustainerPeriodDao;
 import edu.usm.service.CommitteeService;
 import edu.usm.service.ContactService;
 import edu.usm.service.DonationService;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,11 +44,15 @@ public class ContactServiceTest extends WebAppConfigurationAware {
     @Autowired
     DonationService donationService;
 
+    @Autowired
+    SustainerPeriodDao sustainerPeriodDao;
+
     private Contact contact;
     private Contact contact2;
     private Organization organization;
     private Committee committee;
     private Donation donation;
+    private SustainerPeriod sustainerPeriod;
 
     @Before
     public void setup() {
@@ -74,6 +82,12 @@ public class ContactServiceTest extends WebAppConfigurationAware {
         donation.setAmount(200);
         donation.setDateOfDeposit(LocalDate.now());
         donation.setDateOfDeposit(LocalDate.of(2015, 1, 1));
+
+        sustainerPeriod = new SustainerPeriod();
+        sustainerPeriod.setPeriodStartDate(LocalDate.of(2015, 1, 1));
+        sustainerPeriod.setCancelDate(LocalDate.now());
+        sustainerPeriod.setSentIRSLetter(true);
+        sustainerPeriod.setMonthlyAmount(20);
 
         organization = new Organization();
         organization.setName("organization");
@@ -424,4 +438,44 @@ public class ContactServiceTest extends WebAppConfigurationAware {
         donation = donationService.findById(donation.getId());
         assertNotNull(donation);
     }
+
+    @Test
+    public void testCreateSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+
+        contact = contactService.findById(contact.getId());
+        assertNotNull(contact.getDonorInfo());
+        assertFalse(contact.getDonorInfo().getSustainerPeriods().isEmpty());
+    }
+
+    @Test
+    public void testUpdateSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+
+        int newMonthlyAmount = sustainerPeriod.getMonthlyAmount() + 50;
+        sustainerPeriod.setMonthlyAmount(newMonthlyAmount);
+        contactService.updateSustainerPeriod(contact, sustainerPeriod, DtoTransformer.fromEntity(sustainerPeriod));
+
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+        assertEquals(newMonthlyAmount, sustainerPeriod.getMonthlyAmount());
+    }
+
+    @Test
+    public void testDeleteSustainerPeriod() throws Exception {
+        contactService.create(contact);
+        contactService.createSustainerPeriod(contact, sustainerPeriod);
+        contact = contactService.findById(contact.getId());
+        sustainerPeriod = contact.getDonorInfo().getSustainerPeriods().iterator().next();
+
+        contactService.deleteSustainerPeriod(contact, sustainerPeriod);
+        contact = contactService.findById(contact.getId());
+        assertTrue(contact.getDonorInfo().getSustainerPeriods().isEmpty());
+        assertTrue(((ArrayList<SustainerPeriod>)sustainerPeriodDao.findAll()).isEmpty());
+    }
+
 }

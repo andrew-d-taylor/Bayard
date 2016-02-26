@@ -33,7 +33,8 @@ public enum ConstraintMessage {
     INTERACTION_RECORD_NO_DATE("An interaction must have an interaction date."),
     INTERACTION_RECORD_NO_FOUNDATION("An interaction must ne associated with a foundation."),
     GRANT_REQUIRED_NAME("A grant must have a name associated with it."),
-    GRANT_NO_FOUNDATION("A grant must be associated with a foundation.");
+    GRANT_NO_FOUNDATION("A grant must be associated with a foundation."),
+    SUSTAINER_PERIOD_NO_START_DATE("A sustainer period must have a start date associated with it.");
 
     private final String enumText;
 
