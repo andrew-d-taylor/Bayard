@@ -1524,6 +1524,37 @@
 
         }]);
 
+    controllers.controller('FoundationListCtrl', ['$scope', 'FoundationService', function($scope, FoundationService) {
+
+        var setup = function () {
+            $scope.creatingFoundation = false;
+            $scope.newFoundation = {};
+
+            FoundationService.findAll({}, function(foundations) {
+                $scope.foundations = foundations;
+            }, function(err) {
+                console.log(err);
+            });
+        };
+
+        setup();
+
+        $scope.createFoundation = function() {
+            FoundationService.create($scope.newFoundation, function(succ) {
+                $scope.newFoundation = {};
+                setup();
+            }, function(err) {
+                console.log(err);
+            })
+        };
+
+        $scope.cancelCreateFoundation = function() {
+            $scope.creatingFoundation = false;
+            $scope.newFoudation = {};
+        };
+
+    }]);
+
 
     controllers.controller('UserCtrl', ['$scope', '$rootScope', '$location', '$timeout', '$window', 'UserService', function($scope, $rootScope, $location, $timeout, $window, UserService) {
 
