@@ -78,6 +78,10 @@
                 templateUrl: 'resources/partials/foundationList.html',
                 controller: 'FoundationListCtrl'
             })
+            .when('/foundations/:id', {
+                templateUrl: 'resources/partials/foundationDetails.html',
+                controller: 'FoundationDetailsCtrl'
+            })
             .when('/logout', {
                 templateUrl: 'resources/partials/login.html',
                 controller: 'LogoutCtrl'
