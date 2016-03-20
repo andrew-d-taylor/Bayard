@@ -11,10 +11,17 @@ import edu.usm.service.DonationService;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -102,6 +109,15 @@ public class DonationController {
         }
         donationService.updateBudgetItemName(budgetItem, updated.getName());
         return Response.successGeneric();
+    }
+
+    @RequestMapping(value= "/bydate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Page<Donation> getDonationsByDateRange(@PageableDefault(size = 25, page = 0) Pageable pageable,
+                                                  @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
+                                                  @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
+        return donationService.findDonationsDepositedBetween(from, to, pageable);
+
     }
 
 }

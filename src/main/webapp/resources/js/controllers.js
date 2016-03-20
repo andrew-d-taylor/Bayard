@@ -2288,6 +2288,24 @@
 
     }]);
 
+
+    controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
+
+        var initialSetup = function() {
+            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-30));
+            DonationService.getDonationsByDateRange({from: DateFormatter.formatDate(lookBackDate),
+                to: DateFormatter.formatDate(new Date()), 'page.page':0, 'page.size':25}, function(donations) {
+                $scope.donations = donations.content;
+            }, function(err) {
+                console.log(err);
+            });
+        };
+
+        initialSetup();
+
+
+    }]);
+
     controllers.controller('UserCtrl', ['$scope', '$rootScope', '$location', '$timeout', '$window', 'UserService', function ($scope, $rootScope, $location, $timeout, $window, UserService) {
 
         $scope.userPermissionLevel = new PermissionInterpreter($rootScope.user);

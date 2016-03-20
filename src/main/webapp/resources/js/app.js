@@ -140,6 +140,7 @@
             })
             .when('/donations', {
                 templateUrl: 'resources/partials/donationList.html',
+                controller: 'DonationListCtrl',
                 resolve: {
                     enabled: resolveDevelopmentEnabled
                 }

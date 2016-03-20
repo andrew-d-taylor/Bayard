@@ -260,6 +260,10 @@
             deleteBudgetItem : {
                 method: 'DELETE',
                 url: '../donations/budgetitems/:budgetItemId'
+            },
+            getDonationsByDateRange : {
+                method: 'GET',
+                url: '../donations/bydate'
             }
         });
     }]);
