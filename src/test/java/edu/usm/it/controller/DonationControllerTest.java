@@ -170,16 +170,13 @@ public class DonationControllerTest extends WebAppConfigurationAware {
         LocalDate from = donation.getDateOfDeposit().minus(7, ChronoUnit.DAYS);
         LocalDate to = donation.getDateOfDeposit().plus(7, ChronoUnit.DAYS);
 
-        MvcResult result = mockMvc.perform(get(DONATIONS_BASE_URL + "/bydate")
+        mockMvc.perform(get(DONATIONS_BASE_URL + "/bydate")
                 .param("from", from.toString())
                 .param("to", to.toString())
                 .param("page.page", "0")
                 .param("page.size", "20")
                 .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String jsonResponse = result.getResponse().getContentAsString();
-        String x = "test";
+                .andExpect(status().isOk());
 
     }
 
