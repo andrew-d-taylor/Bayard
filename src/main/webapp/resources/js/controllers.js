@@ -2300,6 +2300,18 @@
 
     controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
 
+        $scope.donations = [];
+        $scope.donationTable = {};
+        $scope.currentPage = 0;
+        $scope.dates = {
+            fromDate : new Date(),
+            toDate : new Date()
+        };
+        $scope.fromDateParameter = "";
+        $scope.toDateParameter = "";
+        $scope.totalQueryElements = 0;
+        $scope.numberElementsShown = 0;
+
         var defaultPageSize = 3;
 
         var rangeQueryParameter = function(from, to, page, size) {
@@ -2317,22 +2329,45 @@
             }
         };
 
-        $scope.createDepositDateQuery = function(from, to) {
-            DonationService.getDonationsByDateRange(rangeQueryParameter(from, to), function(page) {
-                $scope.donations = page.content;
+        $scope.fetchQueryPage = function(from, to, page) {
+            var params = rangeQueryParameter(from, to, page);
+            console.log(params);
+            DonationService.getDonationsByDateRange(params, function(page) {
+                $scope.donations = $scope.donations.concat(page.content);
+                $scope.totalQueryElements = page.totalElements;
+                $scope.numberElementsShown = $scope.donations.length;
             }, function(err) {
                 console.log(err);
             })
         };
 
+        $scope.loadMoreDonations = function() {
+            $scope.currentPage += 1;
+            $scope.fetchQueryPage($scope.fromDateParameter, $scope.toDateParameter, $scope.currentPage);
+        };
+
+        $scope.showParameterOptions = function() {
+            $scope.showingDepositDateQuery = !$scope.showingDepositDateQuery;
+        };
+
+        $scope.submitNewDateQuery = function() {
+            console.log("From: "+$scope.fromDateParameter);
+            console.log("To: "+$scope.toDateParameter);
+
+            $scope.fromDateParameter = DateFormatter.formatDate($scope.dates.fromDate);
+            $scope.toDateParameter = DateFormatter.formatDate($scope.dates.toDate);
+
+            $scope.currentPage = 0;
+            $scope.donations = [];
+            $scope.fetchQueryPage($scope.fromDateParameter, $scope.toDateParameter, $scope.currentPage);
+        }
+
         var initialSetup = function() {
-            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-90));
-            $scope.createDepositDateQuery(lookBackDate, new Date());
+            $scope.dates.fromDate = new Date(new Date().setDate(new Date().getDate()-90));
+            $scope.submitNewDateQuery();
         };
 
         initialSetup();
-
-
 
     }]);
 

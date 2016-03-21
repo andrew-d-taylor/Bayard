@@ -1,5 +1,45 @@
 <div class="container-fluid">
     <h1 style="text-align: center">Donations</h1>
     <br><br>
-    <div ng-include src=" 'resources/partials/tables/simpleDonationTable.html' "></div>
+    <div class="row">
+        <div class="col-md-1">
+            <button class="btn btn-primary" ng-click="showParameterOptions()">Search by Deposit Date</button>
+        </div>
+        <div ng-if="showingDepositDateQuery">
+            <div class="form-group col-md-2">
+                <label class="control-label">From</label>
+                <div class="input-group">
+                    <input name="dates.fromDate" ng-model="dates.fromDate" type="date" class="form-control">
+                </div>
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label">To</label>
+                <div class="input-group">
+                    <input name="dates.toDate" ng-model="dates.toDate" type="date" class="form-control">
+                </div>
+            </div>
+            <div class="form-group col-md-2">
+                <button class="btn btn-success" ng-click="submitNewDateQuery()">OK</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <p>Showing {{numberElementsShown}} out of {{totalQueryElements}} results</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div ng-include src=" 'resources/partials/tables/simpleDonationTable.html' "></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary" ng-click="loadMoreDonations()" ng-disabled="numberElementsShown == totalQueryElements">View More</button>
+        </div>
+    </div>
+
 </div>
