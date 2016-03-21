@@ -113,7 +113,7 @@ public class DonationController {
 
     @RequestMapping(value= "/bydate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<Donation> getDonationsByDateRange(@PageableDefault(size = 25, page = 0) Pageable pageable,
+    public Page<Donation> getDonationsByDateRange(Pageable pageable,
                                                   @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
                                                   @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
         return donationService.findDonationsDepositedBetween(from, to, pageable);

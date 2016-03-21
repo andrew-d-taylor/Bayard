@@ -1254,6 +1254,14 @@
            console.log(err);
         });
         $scope.donationMethodOptions = ['PayPal', 'Cash', 'Check', 'Credit Card', 'In-kind'];
+
+        //default values for dates are set to today
+        $scope.modelHolder.donationModel = {
+            dates : {
+                dateOfReceipt: new Date(),
+                dateOfDeposit: new Date()
+            }
+        }
     }]);
 
     controllers.controller('OrganizationDetailsCtrl', ['$scope', 'OrganizationService', '$routeParams', '$location', '$window', '$timeout', 'DateFormatter',
@@ -1261,6 +1269,7 @@
 
             $scope.formHolder = {};
             $scope.modelHolder = {};
+
 
             $scope.contactCollection = {};
 
@@ -2291,10 +2300,19 @@
 
     controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
 
+        var rangeQueryParameter = function(from, to, page, size) {
+            return {
+                from: DateFormatter.formatDate(from),
+                to: DateFormatter.formatDate(to),
+                page: page,
+                size: size
+            }
+        };
+
         var initialSetup = function() {
-            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-30));
-            DonationService.getDonationsByDateRange({from: DateFormatter.formatDate(lookBackDate),
-                to: DateFormatter.formatDate(new Date()), 'page.page':0, 'page.size':25}, function(donations) {
+            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-90));
+            var params = rangeQueryParameter(lookBackDate, new Date(), 0, 3);
+            DonationService.getDonationsByDateRange(params, function(donations) {
                 $scope.donations = donations.content;
             }, function(err) {
                 console.log(err);
