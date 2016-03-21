@@ -2300,7 +2300,15 @@
 
     controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
 
+        var defaultPageSize = 3;
+
         var rangeQueryParameter = function(from, to, page, size) {
+            if (null == page) {
+                page = 0
+            }
+            if (null == size) {
+                size = defaultPageSize
+            }
             return {
                 from: DateFormatter.formatDate(from),
                 to: DateFormatter.formatDate(to),
@@ -2309,17 +2317,21 @@
             }
         };
 
-        var initialSetup = function() {
-            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-90));
-            var params = rangeQueryParameter(lookBackDate, new Date(), 0, 3);
-            DonationService.getDonationsByDateRange(params, function(donations) {
-                $scope.donations = donations.content;
+        $scope.createDepositDateQuery = function(from, to) {
+            DonationService.getDonationsByDateRange(rangeQueryParameter(from, to), function(page) {
+                $scope.donations = page.content;
             }, function(err) {
                 console.log(err);
-            });
+            })
+        };
+
+        var initialSetup = function() {
+            var lookBackDate = new Date(new Date().setDate(new Date().getDate()-90));
+            $scope.createDepositDateQuery(lookBackDate, new Date());
         };
 
         initialSetup();
+
 
 
     }]);

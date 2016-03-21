@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var app = angular.module('app', ['ui.mask', 'ngRoute', 'controllers','services','filters', 'interceptors']);
+    var app = angular.module('app', ['ui.mask', 'ngRoute', 'controllers','services','filters', 'interceptors', 'angularUtils.directives.dirPagination']);
 
     app.config(["$httpProvider", function ($httpProvider) {
         $httpProvider.interceptors.push("baseInterceptor");
