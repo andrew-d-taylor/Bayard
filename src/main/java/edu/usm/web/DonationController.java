@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -113,7 +114,7 @@ public class DonationController {
 
     @RequestMapping(value= "/bydepositdate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<Donation> getDonationsDepositedWithinDateRange(Pageable pageable,
+    public Page<Donation> getDonationsDepositedWithinDateRange(@PageableDefault(sort= "dateOfDeposit", direction = Sort.Direction.DESC)Pageable pageable,
                                                   @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
                                                   @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
         return donationService.findDonationsDepositedBetween(from, to, pageable);
@@ -122,7 +123,7 @@ public class DonationController {
 
     @RequestMapping(value= "/byreceiptdate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<Donation> getDonationsReceivedWithinDateRange(Pageable pageable,
+    public Page<Donation> getDonationsReceivedWithinDateRange(@PageableDefault(sort= "dateOfReceipt", direction = Sort.Direction.DESC)Pageable pageable,
                                                   @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
                                                   @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
         return donationService.findDonationsReceivedBetween(from, to, pageable);
