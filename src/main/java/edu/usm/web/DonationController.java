@@ -111,13 +111,23 @@ public class DonationController {
         return Response.successGeneric();
     }
 
-    @RequestMapping(value= "/bydate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value= "/bydepositdate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<Donation> getDonationsByDateRange(Pageable pageable,
+    public Page<Donation> getDonationsDepositedWithinDateRange(Pageable pageable,
                                                   @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
                                                   @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
         return donationService.findDonationsDepositedBetween(from, to, pageable);
 
     }
+
+    @RequestMapping(value= "/byreceiptdate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Donation> getDonationsReceivedWithinDateRange(Pageable pageable,
+                                                  @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
+                                                  @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
+        return donationService.findDonationsReceivedBetween(from, to, pageable);
+
+    }
+
 
 }

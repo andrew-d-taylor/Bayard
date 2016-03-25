@@ -261,9 +261,13 @@
                 method: 'DELETE',
                 url: '../donations/budgetitems/:budgetItemId'
             },
-            getDonationsByDateRange : {
+            getDonationsByDepositRange : {
                 method: 'GET',
-                url: '../donations/bydate'
+                url: '../donations/bydepositdate'
+            },
+            getDonationsByReceiptRange : {
+                method: 'GET',
+                url: '../donations/byreceiptdate'
             }
         });
     }]);

@@ -163,14 +163,32 @@ public class DonationControllerTest extends WebAppConfigurationAware {
     }
 
     @Test
-    public void testGetDonationsByDateRange() throws Exception {
+    public void testGetDonationsByDepositRange() throws Exception {
         donationService.create(donation);
         Donation secondDonation = new Donation(100, "Credit Card", donation.getDateOfReceipt(), donation.getDateOfDeposit());
         donationService.create(secondDonation);
         LocalDate from = donation.getDateOfDeposit().minus(7, ChronoUnit.DAYS);
         LocalDate to = donation.getDateOfDeposit().plus(7, ChronoUnit.DAYS);
 
-        mockMvc.perform(get(DONATIONS_BASE_URL + "/bydate")
+        mockMvc.perform(get(DONATIONS_BASE_URL + "/bydepositdate")
+                .param("from", from.toString())
+                .param("to", to.toString())
+                .param("page.page", "0")
+                .param("page.size", "20")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void testGetDonationsByReceiptRange() throws Exception {
+        donationService.create(donation);
+        Donation secondDonation = new Donation(100, "Credit Card", donation.getDateOfReceipt(), donation.getDateOfDeposit());
+        donationService.create(secondDonation);
+        LocalDate from = donation.getDateOfDeposit().minus(7, ChronoUnit.DAYS);
+        LocalDate to = donation.getDateOfDeposit().plus(7, ChronoUnit.DAYS);
+
+        mockMvc.perform(get(DONATIONS_BASE_URL + "/bydreceiptdate")
                 .param("from", from.toString())
                 .param("to", to.toString())
                 .param("page.page", "0")

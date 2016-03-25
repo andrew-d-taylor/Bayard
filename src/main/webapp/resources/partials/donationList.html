@@ -3,36 +3,65 @@
     <br><br>
     <div class="row">
         <div class="col-xs-4">
-            <button class="btn btn-primary" ng-click="showParameterOptions()">Search by Deposit Date</button>
+            <button class="btn btn-primary" ng-click="showDepositOptions()" ng-class="{ 'btn-success': showingDepositDateQuery}">Search by Deposit Date</button>
         </div>
     </div>
     <div ng-if="showingDepositDateQuery">
         <div class="row">
             <div class="form-group col-xs-2">
                 <label class="control-label">From:</label>
-                <input name="dates.fromDate" ng-model="dates.fromDate" type="date" class="form-control">
+                <input name="dates.fromDepositDate" ng-model="dates.fromDepositDate" type="date" class="form-control">
             </div>
         </div>
         <div class="row">
             <div class="form-group col-xs-2">
                 <label class="control-label">To:</label>
-                <input name="dates.toDate" ng-model="dates.toDate" type="date" class="form-control">
+                <input name="dates.toDepositDate" ng-model="dates.toDepositDate" type="date" class="form-control">
             </div>
         </div>
         <div class="row">
             <div class="form-group col-xs-4">
-                <button class="btn btn-success" ng-click="submitNewDateQuery()">Search</button>
+                <button class="btn btn-success" ng-click="submitNewDepositDateQuery()">Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">
+            <button class="btn btn-primary" ng-click="showReceiptOptions()" ng-class="{ 'btn-success': showingReceiptDateQuery}">Search by Receipt Date</button>
+        </div>
+    </div>
+    <div ng-if="showingReceiptDateQuery">
+        <div class="row">
+            <div class="form-group col-xs-2">
+                <label class="control-label">From:</label>
+                <input name="dates.fromReceiptDate" ng-model="dates.fromReceiptDate" type="date" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-xs-2">
+                <label class="control-label">To:</label>
+                <input name="dates.toReceiptDate" ng-model="dates.toReceiptDate" type="date" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-xs-4">
+                <button class="btn btn-success" ng-click="submitNewReceiptDateQuery()">Search</button>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-2">
-            <p>Showing {{numberElementsShown}} out of {{totalQueryElements}} results</p>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <p>Showing {{numberElementsShown}} of {{totalQueryElements}} results</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8">
-            <div ng-include src=" 'resources/partials/tables/simpleDonationTable.html' "></div>
+            <div ng-include src=" 'resources/partials/tables/fullDonationTable.html' "></div>
         </div>
     </div>
     <div class="row">

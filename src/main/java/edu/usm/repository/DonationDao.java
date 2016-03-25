@@ -26,4 +26,6 @@ public interface DonationDao extends PagingAndSortingRepository<Donation, String
 
     Page<Donation> findByDateOfDepositBetween(LocalDate from, LocalDate to, Pageable pageable);
 
+    Page<Donation> findByDateOfReceiptBetween(LocalDate from, LocalDate to, Pageable pageable);
+
 }
