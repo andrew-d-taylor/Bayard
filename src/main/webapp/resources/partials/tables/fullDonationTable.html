@@ -1,0 +1,26 @@
+<br>
+<table class="bootstrap-table table table-striped table-hover table-responsive"
+       data-toggle="table"
+       data-pagination="true"
+       data-search="true">
+    <tr>
+        <th ng-click="orderingProperty = 'dateOfReceipt' ; reverseSort =! reverseSort">Date of Receipt<span ng-show="orderingProperty == 'dateOfReceipt'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'dateOfDeposit' ; reverseSort =! reverseSort">Date of Deposit<span ng-show="orderingProperty == 'dateOfDeposit'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'amount' ; reverseSort =! reverseSort">Amount<span ng-show="orderingProperty == 'amount'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'method' ; reverseSort =! reverseSort">Method<span ng-show="orderingProperty == 'method'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'restrictedToCategory' ; reverseSort =! reverseSort">Restricted<span ng-show="orderingProperty == 'restrictedToCategory'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'budgetItem.name' ; reverseSort =! reverseSort">Budget Item<span ng-show="orderingProperty == 'budgetItem.name'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'anonymous' ; reverseSort =! reverseSort">Anonymous<span ng-show="orderingProperty == 'anonymous'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+        <th ng-click="orderingProperty = 'standalone' ; reverseSort =! reverseSort">Standalone<span ng-show="orderingProperty == 'standalone'"><span ng-show="!reverseSort"> ^</span><span ng-show="reverseSort"> v</span></span></th>
+    </tr>
+    <tr ng-repeat="donation in donations | orderBy:orderingProperty:reverseSort" ng-href="#/donations/donation/{{donation.id}}">
+        <td>{{donation.dateOfReceipt | date: 'MMMM d, y'}}</td>
+        <td>{{donation.dateOfDeposit | date: 'MMMM d, y'}}</td>
+        <td>${{donation.amount}}</td>
+        <td>{{donation.method}}</td>
+        <td>{{donation.restrictedToCategory}}</td>
+        <td>{{donation.budgetItem.name}}</td>
+        <td><span data-toggle="tooltip" title="Anonymous" class="glyphicon glyphicon-warning-sign" ng-if="donation.anonymous" aria-hidden="true"></span></td>
+        <td><span data-toggle="tooltip" title="Standalone" class="glyphicon glyphicon-asterisk" ng-if="donation.standalone" aria-hidden="true"></span></td>
+    </tr>
+</table>
