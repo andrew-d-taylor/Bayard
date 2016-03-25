@@ -2300,6 +2300,8 @@
 
     controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
 
+        $scope.donationTable = {};
+
         $scope.queries = {
             byDepositDate: "By deposit date",
             byReceiptDate: "By receipt date"
@@ -2323,7 +2325,7 @@
         $scope.totalQueryElements = 0;
         $scope.numberElementsShown = 0;
 
-        var defaultPageSize = 3;
+        var defaultPageSize = 10;
 
         $scope.loadMoreDonations = function() {
             $scope.currentPage += 1;
@@ -2363,6 +2365,8 @@
 
         $scope.submitNewReceiptDateQuery = function() {
             $scope.activeQuery = $scope.queries.byReceiptDate;
+            $scope.donationTable.orderingProperty = 'dateOfReceipt';
+            $scope.donationTable.reverseSort = trye;
             $scope.fromReceiptDateParameter = DateFormatter.formatDate($scope.dates.fromReceiptDate);
             $scope.toReceiptDateParameter = DateFormatter.formatDate($scope.dates.toReceiptDate);
 
@@ -2374,6 +2378,8 @@
 
         $scope.submitNewDepositDateQuery = function() {
             $scope.activeQuery = $scope.queries.byDepositDate;
+            $scope.donationTable.orderingProperty = 'dateOfDeposit';
+            $scope.donationTable.reverseSort = true;
             $scope.fromDepositDateParameter = DateFormatter.formatDate($scope.dates.fromDepositDate);
             $scope.toDepositDateParameter = DateFormatter.formatDate($scope.dates.toDepositDate);
 
@@ -2410,7 +2416,7 @@
 
         var initialSetup = function() {
             $scope.activeQuery = $scope.queries.byDepositDate;
-            $scope.dates.fromDepositDate = new Date(new Date().setDate(new Date().getDate()-90));
+            $scope.dates.fromDepositDate = new Date(new Date().setDate(new Date().getDate()-30));
             $scope.dates.toDepositDate = new Date();
             $scope.submitNewDepositDateQuery();
         };
