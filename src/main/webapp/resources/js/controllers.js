@@ -219,7 +219,15 @@
                     console.log(err);
                 });
 
-                $scope.modelHolder = {};
+                $scope.modelHolder = {
+                    donationModel : {
+                        dates: {
+                            dateOfDeposit: new Date(),
+                            dateOfReceipt: new Date()
+                        }
+                    }
+                };
+
                 $scope.formHolder = {};
 
             };
@@ -2334,7 +2342,7 @@
         $scope.totalQueryElements = 0;
         $scope.numberElementsShown = 0;
 
-        var defaultPageSize = 3;
+        var defaultPageSize = 10;
 
         $scope.loadMoreDonations = function() {
             $scope.currentPage += 1;
