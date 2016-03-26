@@ -268,6 +268,10 @@
             getDonationsByReceiptRange : {
                 method: 'GET',
                 url: '../donations/byreceiptdate'
+            },
+            getDonationsByBudgetItem : {
+                method: 'GET',
+                url: '../donations/bybudgetitem'
             }
         });
     }]);

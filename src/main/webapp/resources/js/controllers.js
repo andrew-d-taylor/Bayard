@@ -2304,7 +2304,8 @@
 
         $scope.queries = {
             byDepositDate: "By deposit date",
-            byReceiptDate: "By receipt date"
+            byReceiptDate: "By receipt date",
+            byBudgetItem: "By budget item"
         };
 
         $scope.activeQuery = "";
@@ -2312,20 +2313,27 @@
         $scope.donations = [];
         $scope.donationTable = {};
         $scope.currentPage = 0;
-        $scope.dates = {
+
+        $scope.selectedOptions = {
             fromDepositDate: new Date(),
             toDepositDate: new Date(),
             fromReceiptDate: new Date(),
-            toReceiptDate: new Date()
+            toReceiptDate: new Date(),
+            budgetItemId : ""
         };
-        $scope.fromDepositDateParameter = "";
-        $scope.toDepositDateParameter = "";
-        $scope.fromReceiptDateParameter = "";
-        $scope.toReceiptDateParameter = "";
+
+        $scope.parameters = {
+            fromDepositDateParameter : "",
+            toDepositDateParameter : "",
+            fromReceiptDateParameter : "",
+            toReceiptDateParameter : "",
+            budgetitemIdParameter : ""
+        };
+
         $scope.totalQueryElements = 0;
         $scope.numberElementsShown = 0;
 
-        var defaultPageSize = 10;
+        var defaultPageSize = 3;
 
         $scope.loadMoreDonations = function() {
             $scope.currentPage += 1;
@@ -2336,39 +2344,55 @@
                 case $scope.queries.byReceiptDate:
                     getReceiptDatePage();
                     break;
+                case $scope.queries.byBudgetItem:
+                    getBudgetItemPage();
+                    break;
                 default:
                     break;
             }
         };
 
         var getReceiptDatePage = function() {
-            var params = rangeQueryParameter($scope.fromReceiptDateParameter, $scope.toReceiptDateParameter, $scope.currentPage);
+            var params = rangeQueryParameter($scope.parameters.fromReceiptDateParameter, $scope.parameters.toReceiptDateParameter, $scope.currentPage);
             DonationService.getDonationsByReceiptRange(params, mergePageResponse, logError);
         };
 
         var getDepositDatePage = function() {
-            var params = rangeQueryParameter($scope.fromDepositDateParameter, $scope.toDepositDateParameter, $scope.currentPage);
+            var params = rangeQueryParameter($scope.parameters.fromDepositDateParameter, $scope.parameters.toDepositDateParameter, $scope.currentPage);
             DonationService.getDonationsByDepositRange(params, mergePageResponse,logError);
+        };
+
+        var getBudgetItemPage = function() {
+            var params = {item: $scope.parameters.budgetitemIdParameter, page:$scope.currentPage, size:defaultPageSize};
+            DonationService.getDonationsByBudgetItem(params, mergePageResponse,logError);
         };
 
         //TODO find a smarter way to handle these various showing conditions
         $scope.showReceiptOptions = function() {
             $scope.showingReceiptDateQuery = !$scope.showingReceiptDateQuery;
             $scope.showingDepositDateQuery = false;
-
+            $scope.showingBudgetItemQuery = false;
         };
 
         $scope.showDepositOptions = function() {
             $scope.showingDepositDateQuery = !$scope.showingDepositDateQuery;
             $scope.showingReceiptDateQuery = false;
+            $scope.showingBudgetItemQuery = false;
+        };
+
+        $scope.showBudgetItemOptions = function() {
+            $scope.showingBudgetItemQuery = !$scope.showingBudgetItemQuery;
+            $scope.showingReceiptDateQuery = false;
+            $scope.showingDepositDateQuery = false;
+
         };
 
         $scope.submitNewReceiptDateQuery = function() {
             $scope.activeQuery = $scope.queries.byReceiptDate;
             $scope.donationTable.orderingProperty = 'dateOfReceipt';
-            $scope.donationTable.reverseSort = trye;
-            $scope.fromReceiptDateParameter = DateFormatter.formatDate($scope.dates.fromReceiptDate);
-            $scope.toReceiptDateParameter = DateFormatter.formatDate($scope.dates.toReceiptDate);
+            $scope.donationTable.reverseSort = true;
+            $scope.parameters.fromReceiptDateParameter = DateFormatter.formatDate($scope.selectedOptions.fromReceiptDate);
+            $scope.parameters.toReceiptDateParameter = DateFormatter.formatDate($scope.selectedOptions.toReceiptDate);
 
             $scope.currentPage = 0;
             $scope.donations = [];
@@ -2380,13 +2404,25 @@
             $scope.activeQuery = $scope.queries.byDepositDate;
             $scope.donationTable.orderingProperty = 'dateOfDeposit';
             $scope.donationTable.reverseSort = true;
-            $scope.fromDepositDateParameter = DateFormatter.formatDate($scope.dates.fromDepositDate);
-            $scope.toDepositDateParameter = DateFormatter.formatDate($scope.dates.toDepositDate);
+            $scope.parameters.fromDepositDateParameter = DateFormatter.formatDate($scope.selectedOptions.fromDepositDate);
+            $scope.parameters.toDepositDateParameter = DateFormatter.formatDate($scope.selectedOptions.toDepositDate);
 
             $scope.currentPage = 0;
             $scope.donations = [];
 
             getDepositDatePage();
+        };
+
+        $scope.submitNewBudgetItemQuery = function() {
+            $scope.activeQuery = $scope.queries.byBudgetItem;
+            $scope.donationTable.orderingProperty = 'budgetItem.name';
+            $scope.donationTable.reverseSort = true;
+            $scope.parameters.budgetitemIdParameter = $scope.selectedOptions.budgetItemId;
+
+            $scope.currentPage = 0;
+            $scope.donations = [];
+
+            getBudgetItemPage();
         };
 
         var rangeQueryParameter = function(from, to, page, size) {
@@ -2416,10 +2452,14 @@
 
         var initialSetup = function() {
             $scope.activeQuery = $scope.queries.byDepositDate;
-            $scope.dates.fromDepositDate = new Date(new Date().setDate(new Date().getDate()-30));
-            $scope.dates.toDepositDate = new Date();
+            $scope.selectedOptions.fromDepositDate = new Date(new Date().setDate(new Date().getDate()-30));
+            $scope.selectedOptions.toDepositDate = new Date();
             $scope.submitNewDepositDateQuery();
         };
+
+        DonationService.getBudgetItems({}, function(items) {
+            $scope.budgetItems = items;
+        }, logError);
 
         initialSetup();
 

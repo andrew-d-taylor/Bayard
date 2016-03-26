@@ -146,4 +146,10 @@ public class DonationServiceImpl extends BasicService implements DonationService
     public Page<Donation> findDonationsReceivedBetween(LocalDate from, LocalDate to, Pageable pageable) {
         return donationDao.findByDateOfReceiptBetween(from, to, pageable);
     }
+
+    @Override
+    public Page<Donation> findDonationsByBudgetItem(String budgetItemId, Pageable pageable) {
+        BudgetItem item = budgetItemDao.findOne(budgetItemId);
+        return donationDao.findByBudgetItem(item, pageable);
+    }
 }

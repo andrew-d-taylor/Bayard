@@ -127,7 +127,13 @@ public class DonationController {
                                                   @RequestParam("from")@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate from,
                                                   @RequestParam("to")@DateTimeFormat(pattern="yyyy-MM-dd")LocalDate to) {
         return donationService.findDonationsReceivedBetween(from, to, pageable);
+    }
 
+    @RequestMapping(value= "/bybudgetitem", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Donation> getDonationsReceivedWithinDateRange(@PageableDefault(sort= "dateOfReceipt", direction = Sort.Direction.DESC)Pageable pageable,
+                                                              @RequestParam("item")String item) {
+        return donationService.findDonationsByBudgetItem(item, pageable);
     }
 
 

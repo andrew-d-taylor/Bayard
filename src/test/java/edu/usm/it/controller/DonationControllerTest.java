@@ -198,4 +198,20 @@ public class DonationControllerTest extends WebAppConfigurationAware {
 
     }
 
+    @Test
+    public void testGetDonationsByBudgetItem() throws Exception {
+        budgetItem = new BudgetItem("Test budget item");
+        donationService.createBudgetItem(budgetItem);
+        donation.setBudgetItem(budgetItem);
+        donationService.create(donation);
+
+        mockMvc.perform(get(DONATIONS_BASE_URL + "/bybudgetitem")
+                .param("item", budgetItem.getId())
+                .param("page.page", "0")
+                .param("page.size", "20")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
 }

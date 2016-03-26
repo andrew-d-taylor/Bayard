@@ -69,4 +69,6 @@ public interface DonationService {
     @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
     Page<Donation> findDonationsReceivedBetween(LocalDate from, LocalDate to, Pageable pageable);
 
+    @PreAuthorize(value = "hasAnyRole('ROLE_DEVELOPMENT','ROLE_ELEVATED','ROLE_SUPERUSER')")
+    Page<Donation> findDonationsByBudgetItem(String budgetItemId, Pageable pageable);
 }
