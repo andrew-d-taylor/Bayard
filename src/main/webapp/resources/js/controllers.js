@@ -2462,10 +2462,6 @@
             $scope.budgetItems = items;
         }, logError);
 
-        $scope.viewDonationDetails = function(donation) {
-            $location.path("/donations/"+donation.id);
-        };
-
         initialSetup();
 
     }]);
@@ -2518,6 +2514,13 @@
 
     }]);
 
+    controllers.controller('DonationTableCtrl', ['$scope', '$location', function($scope, $location) {
+
+        $scope.viewDonationDetails = function(donation) {
+            $location.path("/donations/"+donation.id);
+        }
+
+    }]);
 
     controllers.controller('UserCtrl', ['$scope', '$rootScope', '$location', '$timeout', '$window', 'UserService', function ($scope, $rootScope, $location, $timeout, $window, UserService) {
 
