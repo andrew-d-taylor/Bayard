@@ -861,7 +861,15 @@
     controllers.controller('EventDetailsCtrl', ['$scope', 'EventService', '$routeParams', 'CommitteeService', '$timeout', '$window', '$location', 'DateFormatter',
         function ($scope, EventService, $routeParams, CommitteeService, $timeout, $window, $location, DateFormatter) {
 
-            $scope.modelHolder = {};
+            $scope.modelHolder = {
+                donationModel : {
+                    dates: {
+                        dateOfDeposit: new Date(),
+                        dateOfReceipt: new Date()
+                    }
+                }
+            };
+
             $scope.formHolder = {};
 
             $scope.viewContactDetails = function (contactId) {
@@ -1255,21 +1263,20 @@
         });
         $scope.donationMethodOptions = ['PayPal', 'Cash', 'Check', 'Credit Card', 'In-kind'];
 
-        //default values for dates are set to today
-        $scope.modelHolder.donationModel = {
-            dates : {
-                dateOfReceipt: new Date(),
-                dateOfDeposit: new Date()
-            }
-        }
     }]);
 
     controllers.controller('OrganizationDetailsCtrl', ['$scope', 'OrganizationService', '$routeParams', '$location', '$window', '$timeout', 'DateFormatter',
         function ($scope, OrganizationService, $routeParams, $location, $window, $timeout, DateFormatter) {
 
             $scope.formHolder = {};
-            $scope.modelHolder = {};
-
+            $scope.modelHolder = {
+                donationModel : {
+                    dates: {
+                        dateOfDeposit: new Date(),
+                        dateOfReceipt: new Date()
+                    }
+                }
+            };
 
             $scope.contactCollection = {};
 
@@ -1293,11 +1300,6 @@
             };
 
             establishDetails($routeParams.id);
-
-            $scope.showUpdateForm = function () {
-                $scope.updatingOrganizationDetails = true;
-            };
-
             $scope.cancelUpdate = function () {
                 $scope.updatingOrganizationDetails = false;
                 establishDetails($scope.modelHolder.organizationModel.id);
@@ -2297,8 +2299,7 @@
 
     }]);
 
-
-    controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', function($scope, DonationService, DateFormatter) {
+    controllers.controller('DonationListCtrl', ['$scope', 'DonationService', 'DateFormatter', '$location', function($scope, DonationService, DateFormatter, $location) {
 
         $scope.donationTable = {};
 
@@ -2461,9 +2462,62 @@
             $scope.budgetItems = items;
         }, logError);
 
+        $scope.viewDonationDetails = function(donation) {
+            $location.path("/donations/"+donation.id);
+        };
+
         initialSetup();
 
     }]);
+
+    controllers.controller('DonationDetailsCtrl', ['$scope', 'DonationService', '$routeParams', '$timeout', 'DateFormatter', function($scope, DonationService, $routeParams, $timeout, DateFormatter) {
+
+        $scope.modelHolder = {};
+        $scope.formHolder = {};
+
+        var establishDetails = function(id) {
+            DonationService.find({id: id}, function(donation) {
+                $scope.modelHolder.donationModel = donation;
+                $scope.modelHolder.donationModel.dates = {
+                    dateOfDeposit : DateFormatter.asDate(donation.dateOfDeposit),
+                    dateOfReceipt : DateFormatter.asDate(donation.dateOfReceipt)
+                };
+
+                console.log($scope.modelHolder.donationModel);
+                console.log(donation);
+                if (null != donation.budgetItem) {
+                    $scope.modelHolder.donationModel.budgetItemId = donation.budgetItem.id;
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        };
+
+        establishDetails($routeParams.id);
+
+        $scope.updateDonationDetails = function() {
+            $scope.modelHolder.donationModel.dateOfReceipt = DateFormatter.formatDate($scope.modelHolder.donationModel.dates.dateOfReceipt);
+            $scope.modelHolder.donationModel.dateOfDeposit = DateFormatter.formatDate($scope.modelHolder.donationModel.dates.dateOfDeposit);
+
+            DonationService.update({id: $scope.modelHolder.donationModel.id}, $scope.modelHolder.donationModel, function(succ) {
+                $scope.editingDonationDetails = false;
+                $scope.requestSuccess = true;
+                $timeout(function() {
+                    $scope.requestSuccess = false;
+                }, 3000);
+                establishDetails($scope.modelHolder.donationModel.id);
+            }, function(err) {
+                console.log(err);
+            })
+        };
+
+        $scope.cancelUpdateDonationDetails = function() {
+            $scope.editingDonationDetails = false;
+            establishDetails($scope.modelHolder.donationModel.id);
+        };
+
+    }]);
+
 
     controllers.controller('UserCtrl', ['$scope', '$rootScope', '$location', '$timeout', '$window', 'UserService', function ($scope, $rootScope, $location, $timeout, $window, UserService) {
 

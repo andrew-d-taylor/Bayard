@@ -146,7 +146,8 @@
                 }
             })
             .when('/donations/:id', {
-                templateUrl: 'resources/partials/donationList.html',
+                templateUrl: 'resources/partials/donationDetails.html',
+                controller: 'DonationDetailsCtrl',
                 resolve: {
                     enabled: resolveDevelopmentEnabled
                 }

@@ -13,7 +13,7 @@
         <th ng-click="donationTable.orderingProperty = 'anonymous' ; donationTable.reverseSort =! donationTable.reverseSort">Anonymous<span ng-show="donationTable.orderingProperty == 'anonymous'"><span ng-show="!donationTable.reverseSort"> ^</span><span ng-show="donationTable.reverseSort"> v</span></span></th>
         <th ng-click="donationTable.orderingProperty = 'standalone' ; donationTable.reverseSort =! donationTable.reverseSort">Standalone<span ng-show="donationTable.orderingProperty == 'standalone'"><span ng-show="!donationTable.reverseSort"> ^</span><span ng-show="donationTable.reverseSort"> v</span></span></th>
     </tr>
-    <tr ng-repeat="donation in donations | orderBy:donationTable.orderingProperty:donationTable.reverseSort" ng-href="#/donations/donation/{{donation.id}}">
+    <tr ng-repeat="donation in donations | orderBy:donationTable.orderingProperty:donationTable.reverseSort" ng-click="viewDonationDetails(donation)">
         <td>{{donation.dateOfReceipt | date: 'MMMM d, y'}}</td>
         <td>{{donation.dateOfDeposit | date: 'MMMM d, y'}}</td>
         <td>${{donation.amount}}</td>
