@@ -17,6 +17,16 @@ public class ConfigDto implements Serializable{
 
     private boolean developmentEnabled;
 
+    private boolean startupMode;
+
+    public boolean isStartupMode() {
+        return startupMode;
+    }
+
+    public void setStartupMode(boolean startupMode) {
+        this.startupMode = startupMode;
+    }
+
     public boolean isDevelopmentEnabled() {
         return developmentEnabled;
     }

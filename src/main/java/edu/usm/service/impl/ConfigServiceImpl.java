@@ -26,6 +26,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Value("${bayard.implementation.enableDevelopmentFeatures}")
     private String developmentEnabled;
 
+    @Value("${bayard.implementation.startupMode}")
+    private String startupMode;
+
     @Override
     public ConfigDto getImplementationConfig() {
         ConfigDto dto = new ConfigDto();
@@ -34,6 +37,7 @@ public class ConfigServiceImpl implements ConfigService {
         dto.setLargeLogoFilePath(largeLogoFilePath);
         dto.setFaviconFilePath(faviconFilePath);
         dto.setDevelopmentEnabled(Boolean.valueOf(developmentEnabled));
+        dto.setStartupMode(Boolean.valueOf(startupMode));
         return dto;
     }
 }
