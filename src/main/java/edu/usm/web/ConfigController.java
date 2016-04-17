@@ -22,4 +22,9 @@ public class ConfigController {
         return configService.getImplementationConfig();
     }
 
+    @RequestMapping(value = "/startup", method = RequestMethod.GET, produces = "application/json")
+    public ConfigDto isStartupMode() {
+        return configService.getStartupMode();
+    }
+
 }

@@ -40,4 +40,12 @@ public class ConfigServiceImpl implements ConfigService {
         dto.setStartupMode(Boolean.valueOf(startupMode));
         return dto;
     }
+
+    @Override
+    public ConfigDto getStartupMode() {
+        ConfigDto dto = new ConfigDto();
+        dto.setStartupMode(Boolean.valueOf(startupMode));
+        return dto;
+    }
+
 }

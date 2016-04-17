@@ -8,5 +8,6 @@ import edu.usm.domain.ConfigDto;
 public interface ConfigService {
 
     ConfigDto getImplementationConfig();
+    ConfigDto getStartupMode();
 
 }
