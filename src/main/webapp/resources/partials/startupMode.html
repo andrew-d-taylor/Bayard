@@ -1,3 +1,42 @@
-<div class="container-fluid text-center">
-    <h3>Welcome to Bayard</h3>
+<div class="jumbotron">
+    <div class="container">
+        <h2>Welcome to Bayard</h2>
+        <p>
+            Bayard is a simple platform for community organizing. Let's get started!
+        </p>
+        <p ng-if="!showingStartupOptions">
+            <button class="btn btn-primary btn-lg" href="" ng-click="showingStartupOptions = !showingStartupOptions" role="button">Go</button>
+        </p>
+
+        <div ng-if="showingStartupOptions">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Implementation Name</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <form id="implementationNameForm" name="implementationNameForm"novalidate>
+                                            <div class="row">
+                                                <div class="form-group col-md-12 required"  ng-class="{ 'has-error' : implementationNameForm.name.$invalid && !implementationNameForm.name.$pristine }">
+                                                    <label class="control-label">What is your organization's name?</label>
+                                                    <input name="name" type="text" class="form-control" ng-model="startupModel.implementationName" ng-maxlength="80" ng-minlength="2" required>
+                                                    <p ng-show="implementationNameForm.name.$error.required && !implementationNameForm.name.$pristine" class="help-block">You must have an implementation name!</p>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>

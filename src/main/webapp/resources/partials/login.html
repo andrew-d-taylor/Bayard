@@ -2,7 +2,7 @@
     <div class="alert alert-danger" ng-show="error">
         There was a problem logging in. Please try again.
     </div>
-    <div class="container" ng-if="!bayardConfig.startupMode">
+    <div class="container" ng-if="!startupMode">
         <form role="form" ng-submit="login()">
             <div class="form-group">
                 <label for="username">Username:</label> <input type="text"
@@ -15,7 +15,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-    <div class="container" ng-if="bayardConfig.startupMode">
-        <div ng-include=""
+    <div class="container" ng-if="startupMode">
+        <div ng-include src=" 'resources/partials/startupMode.html' "></div>
     </div>
 </div>

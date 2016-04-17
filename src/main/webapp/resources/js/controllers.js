@@ -1488,6 +1488,12 @@
 
         $scope.error = false;
 
+        ConfigService.getStartupMode({}, function(config) {
+            $scope.startupMode = config.startupMode;
+            console.log("In startup mode: "+config.startupMode);
+        });
+
+
         var authenticate = function (credentials, callback) {
 
             var headers = credentials ? {

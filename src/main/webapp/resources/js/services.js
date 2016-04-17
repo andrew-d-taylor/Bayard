@@ -698,6 +698,10 @@
         return $resource('../config/:option', {categoryName : '@categoryName'}, {
             getImplementationConfig : {
                 method: 'GET'
+            },
+            getStartupMode : {
+                method: 'GET',
+                url: "/config/startup"
             }
         });
     }]);
